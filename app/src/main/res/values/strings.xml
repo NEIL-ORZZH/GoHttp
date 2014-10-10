@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GoHttp</string>
+    
+    <string name="activityTitle_binary">BinaryHttpResponseHandler</string>
+    <string name="activityTitle_string">StringHttpResponseHandler</string>
+    <string name="activityTitle_json">JsonHttpResponseHandler</string>
+    <string name="activityTitle_download">DownloadHttpResponseHandler</string>
+    <string name="activityTitle_requestObject">使用请求对象</string>
+    
+    <string name="editHint_search">请输入搜索关键字</string>
+    <string name="button_search">搜索</string>
+	
+    <string name="ingLater">正在%s，请稍后…</string>
+	<string name="loadingLater">正在加载%s，请稍后…</string>
+	<string name="image_contentDescription">这是一张图片</string>
+
+	<string name="lang">cn</string>
+</resources>

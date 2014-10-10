@@ -1,0 +1,12 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+	<FrameLayout style="@style/page">
+	    <ScrollView style="@style/match_match">
+	        <LinearLayout style="@style/page_body" android:padding="@dimen/padding_specialLarge">
+	            <TextView style="@style/wrap_wrap" android:id="@+id/text1" android:text=""/>
+	        </LinearLayout>
+	    </ScrollView>
+	
+	    <include layout="@layout/include_hint"/>
+	    <include layout="@layout/include_shadow_down"/>
+	</FrameLayout>
+</merge>

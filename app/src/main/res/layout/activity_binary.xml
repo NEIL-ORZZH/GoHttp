@@ -1,0 +1,11 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+	<FrameLayout style="@style/page">
+	    <ImageView style="@style/wrap_wrap" 
+	        android:id="@+id/image_binary" 
+	        android:layout_gravity="center"
+	        android:contentDescription="@string/image_contentDescription" />
+	
+	    <include layout="@layout/include_hint"/>
+	    <include layout="@layout/include_shadow_down"/>
+	</FrameLayout>
+</merge>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 提示页面 -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+	<me.xiaopan.android.gohttp.sample.widget.HintView
+	    style="@style/match_match" 
+	    android:id="@+id/hint" 
+	    android:visibility="gone"/>
+</merge>

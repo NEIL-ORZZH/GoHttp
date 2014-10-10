@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 常用的主题 -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+   
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="android:windowBackground">@color/page_background</item>
+        <item name="android:listViewStyle">@style/MyListView</item>
+        <item name="android:textViewStyle">@style/MyTextView</item>
+    </style>
+    
+    <style name="MyListView" parent="@android:style/Widget.ListView">
+        <item name="android:id">@android:id/list</item>
+	    <item name="android:cacheColorHint">@android:color/transparent</item>
+	    <item name="android:fastScrollEnabled">true</item>
+    </style>
+    
+    <style name="MyTextView" parent="@android:style/Widget.TextView">
+        <item name="android:textColor">@android:color/black</item>
+		<item name="android:textSize">@dimen/textSize_default</item>
+    </style>
+</resources>

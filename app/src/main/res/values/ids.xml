@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+ 	<item type="id" name="menu_checkUpdate"/>
+ 	<item type="id" name="menu_settings"/>
+    <item type="id" name="menu_exit"/>
+    <item type="id" name="menu_exception"/>
+</resources>

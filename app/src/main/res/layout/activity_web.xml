@@ -1,0 +1,8 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+	<FrameLayout style="@style/page">
+		<WebView style="@style/match_match" android:id="@+id/web1"/>
+	
+	    <include layout="@layout/include_hint"/>
+	    <include layout="@layout/include_shadow_down"/>
+	</FrameLayout>
+</merge>

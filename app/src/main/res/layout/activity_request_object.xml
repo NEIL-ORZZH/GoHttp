@@ -1,0 +1,17 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+	<FrameLayout style="@style/page">
+		<LinearLayout style="@style/page_body">
+		    <LinearLayout style="@style/match_wrap" android:padding="@dimen/padding_default">
+		        <EditText style="@style/weight_wrap" android:hint="@string/editHint_search" android:id="@+id/edit_requestObject_keyword"/>
+		        <Button style="@style/wrap_wrap" android:text="@string/button_search" android:id="@+id/button_requestObject_search" android:layout_marginLeft="@dimen/padding_default"/>
+		    </LinearLayout>
+		    
+		    <FrameLayout style="@style/match_weight">
+				<WebView style="@style/match_match" android:id="@+id/web1"/>
+			    <include layout="@layout/include_hint"/>
+		    </FrameLayout>
+		</LinearLayout>
+		
+	    <include layout="@layout/include_shadow_down"/>
+	</FrameLayout>
+</merge>
