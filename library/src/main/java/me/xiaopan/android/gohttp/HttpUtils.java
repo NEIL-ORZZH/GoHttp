@@ -18,7 +18,7 @@ package me.xiaopan.android.gohttp;
 
 import java.util.List;
 
-import me.xiaopan.android.gohttp.headers.ContentType;
+import me.xiaopan.android.gohttp.header.ContentType;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;

@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class Referer extends HttpHeader {
+public class Host extends HttpHeader {
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Referer";
+	public static final String NAME = "Host";
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public Referer(String value) {
+	public Host(String value) {
 		setValue(value);
 	}
 	
-	public Referer() {
-		setValue("");
-	}
-
 	@Override
 	public String getName() {
 		return NAME;

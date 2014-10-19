@@ -14,24 +14,36 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class UserAgent extends HttpHeader {
+public class Server extends HttpHeader{
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "User-Agent";
+	public static final String NAME = "Server";
+	/**
+	 * 值 - 阿帕奇服务器
+	 */
+	public static final String VALUE_APACHE = "Apache";
+	/**
+	 * 值 - 微软的服务器
+	 */
+	public static final String VALUE_MICROSOFT = "Microsoft-IIS/7.5";
+	/**
+	 * 值 - BWS服务器
+	 */
+	public static final String VALUE_BWS = "BWS/1.0";
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public UserAgent(String value) {
+	public Server(String value) {
 		setValue(value);
 	}
 	
-	public UserAgent() {
-		setValue("Opera/9.80 (Windows NT 6.1; WOW64; U; Edition IBIS; zh-cn) Presto/2.10.289 Version/12.01");
+	public Server() {
+		setValue(VALUE_BWS);
 	}
 
 	@Override

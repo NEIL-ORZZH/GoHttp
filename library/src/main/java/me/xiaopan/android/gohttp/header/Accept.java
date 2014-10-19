@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class Vary extends HttpHeader{
+/**
+ * 接受的文件类型
+ */
+public class Accept extends HttpHeader {
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Vary";
+	public static final String NAME = "Accept";
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public Vary(String value) {
+	public Accept(String value) {
 		setValue(value);
 	}
 	
-	public Vary() {
-		setValue("Accept-Encoding");
+	public Accept() {
+		setValue("text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
 	}
 
 	@Override

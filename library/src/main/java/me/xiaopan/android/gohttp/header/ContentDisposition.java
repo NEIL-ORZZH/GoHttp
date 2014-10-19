@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-/**
- * 接受的语言，默认为：en
- */
-public class AcceptLanguage extends HttpHeader {
+public class ContentDisposition extends HttpHeader{
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Accept-Language";
+	public static final String NAME = "Content-Disposition";
 	/**
 	 * 值
 	 */
 	private String value;
+	private String disposition;
+	private String fileName;
 	
-	public AcceptLanguage(String value) {
+	public ContentDisposition(String value) {
 		setValue(value);
 	}
 	
-	public AcceptLanguage() {
-		setValue("en");
+	public ContentDisposition() {
+		setValue("");
 	}
 
 	@Override
@@ -50,5 +49,33 @@ public class AcceptLanguage extends HttpHeader {
 	@Override
 	public void setValue(String value) {
 		this.value = value;
+		if(value != null){
+			String[] strs = GeneralUtils.split(value, ';');
+			if(strs.length > 0){
+				setDisposition(strs[0]);
+			}
+			if(strs.length > 1){
+				strs = GeneralUtils.split(strs[1], '=');
+				if(strs.length > 1){
+					setFileName(strs[1]);
+				}
+			}
+		}
+	}
+
+	public String getDisposition() {
+		return disposition;
+	}
+
+	public void setDisposition(String disposition) {
+		this.disposition = disposition;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }

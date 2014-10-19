@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class Expires extends HttpHeader{
+public class SetCookie extends HttpHeader{
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Expires";
+	public static final String NAME = "Set-Cookie";
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public Expires(String value) {
+	public SetCookie(String value) {
 		setValue(value);
 	}
 	
-	public Expires() {
+	public SetCookie() {
 		setValue("");
 	}
 

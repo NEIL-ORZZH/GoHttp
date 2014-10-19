@@ -51,9 +51,13 @@ public class GoHttp {
 	 * 获取实例
 	 * @return 实例
 	 */
-	public static synchronized GoHttp getInstance(Context context){
+	public static GoHttp with(Context context){
 		if(instance == null){
-			instance = new GoHttp(context);
+            synchronized(GoHttp.class){
+		        if(instance == null){
+			        instance = new GoHttp(context);
+                }
+            }
 		}
 		return instance;
 	}

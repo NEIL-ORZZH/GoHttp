@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class P3P extends HttpHeader{
+public class Location extends HttpHeader{
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "P3P";
+	public static final String NAME = "Location";
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public P3P(String value) {
+	public Location(String value) {
 		setValue(value);
 	}
 	
-	public P3P() {
-		setValue("CP=\" OTI DSP COR IVA OUR IND COM \"");
+	public Location() {
+		setValue("");
 	}
 
 	@Override

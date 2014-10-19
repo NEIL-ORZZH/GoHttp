@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class AcceptRanges extends HttpHeader{
+public class P3P extends HttpHeader{
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Accept-Ranges";
+	public static final String NAME = "P3P";
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public AcceptRanges(String value) {
+	public P3P(String value) {
 		setValue(value);
 	}
 	
-	public AcceptRanges() {
-		setValue("bytes");
+	public P3P() {
+		setValue("CP=\" OTI DSP COR IVA OUR IND COM \"");
 	}
 
 	@Override

@@ -42,7 +42,7 @@ public class BinaryActivity extends MyActivity {
 	}
 	
 	private void load(){
-		GoHttp.getInstance(getBaseContext()).get("http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529113_1384156076013_800x600.jpg", new BinaryHttpResponseHandler(true) {
+		GoHttp.with(getBaseContext()).get("http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529113_1384156076013_800x600.jpg", new BinaryHttpResponseHandler(true) {
 			@Override
 			protected void onStart() {
 				getHintView().loading("图片");

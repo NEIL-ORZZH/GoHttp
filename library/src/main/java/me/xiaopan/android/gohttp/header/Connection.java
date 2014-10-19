@@ -14,36 +14,32 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class Charset extends HttpHeader {
+public class Connection extends HttpHeader{
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Charset";
+	public static final String NAME = "Connection";
 	/**
-	 * 值
+	 * 值 - 保持状态
 	 */
-	public static final String VALUE_UTF8 = "utf-8";
+	public static final String VALUE_KEEP_ALIVE = "Keep-Alive";
 	/**
-	 * 值
+	 * 值 - 关闭
 	 */
-	public static final String VALUE_ISO88591 = "iso-8859-1";
-	/**
-	 * 值
-	 */
-	public static final String VALUE_UTF16 = "utf-16";
+	public static final String VALUE_CLOSE = "close";
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public Charset(String value) {
+	public Connection(String value) {
 		setValue(value);
 	}
 	
-	public Charset() {
-		setValue(VALUE_UTF8);
+	public Connection() {
+		setValue(VALUE_KEEP_ALIVE);
 	}
 
 	@Override

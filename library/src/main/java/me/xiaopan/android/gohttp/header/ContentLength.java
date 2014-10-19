@@ -14,26 +14,33 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class SetCookie extends HttpHeader{
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+
+public class ContentLength extends HttpHeader{
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Set-Cookie";
+	public static final String NAME = "Content-Length";
 	/**
 	 * 值
 	 */
 	private String value;
+	/**
+	 * 长度
+	 */
+	private long length;
 	
-	public SetCookie(String value) {
+	public ContentLength(String value) {
 		setValue(value);
 	}
 	
-	public SetCookie() {
-		setValue("");
+	public ContentLength(long length) {
+		setLength(length);
 	}
-
+	
 	@Override
 	public String getName() {
 		return NAME;
@@ -47,5 +54,25 @@ public class SetCookie extends HttpHeader{
 	@Override
 	public void setValue(String value) {
 		this.value = value;
+		if(value != null){
+			this.length = Long.valueOf(value);
+		}
+	}
+
+	public long getLength() {
+		return length;
+	}
+
+	public void setLength(long length) {
+		this.length = length;
+	}
+	
+	public static ContentLength getContentLength(HttpResponse httpResponse){
+		Header[] contentTypeString = httpResponse.getHeaders(ContentLength.NAME);
+		if(contentTypeString.length > 0){
+			return new ContentLength(contentTypeString[0].getValue());
+		}else{
+			return null;
+		}
 	}
 }

@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class LastModified extends HttpHeader{
+public class XCache extends HttpHeader{
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Last-Modified";
+	public static final String NAME = "X-Cache";
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public LastModified(String value) {
+	public XCache(String value) {
 		setValue(value);
 	}
 	
-	public LastModified() {
+	public XCache() {
 		setValue("");
 	}
 

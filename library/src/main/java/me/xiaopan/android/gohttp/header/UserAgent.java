@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class CacheControl extends HttpHeader{
+public class UserAgent extends HttpHeader {
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Cache-Control";
-	/**
-	 * 值- 私有的
-	 */
-	public static final String VALUE_PRIVATE = "private"; 
-	/**
-	 * 值 - 不缓存
-	 */
-	public static final String VALUE_NO_CACHE_MUST_REVALIDATE = "no-cache, must-revalidate"; 
+	public static final String NAME = "User-Agent";
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public CacheControl(String value) {
+	public UserAgent(String value) {
 		setValue(value);
 	}
 	
-	public CacheControl() {
-		setValue(VALUE_PRIVATE);
+	public UserAgent() {
+		setValue("Opera/9.80 (Windows NT 6.1; WOW64; U; Edition IBIS; zh-cn) Presto/2.10.289 Version/12.01");
 	}
 
 	@Override

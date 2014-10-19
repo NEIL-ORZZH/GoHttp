@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class AcceptCharset extends HttpHeader {
+public class Date extends HttpHeader{
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Accept-Charset";
+	public static final String NAME = "Date";
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public AcceptCharset(String value) {
+	public Date(String value) {
 		setValue(value);
 	}
 	
-	public AcceptCharset() {
-		setValue("iso-8859-1, utf-8, utf-16, *;q=0.1");
+	public Date() {
+		setValue("");
 	}
 
 	@Override

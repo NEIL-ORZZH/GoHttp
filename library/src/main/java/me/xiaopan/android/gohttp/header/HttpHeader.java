@@ -14,38 +14,27 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class XCache extends HttpHeader{
+/**
+ * Http属性
+ */
+public abstract class HttpHeader {
 	/**
-	 * 名字
+	 * 获取字段名字
+	 * @return 字段名字
 	 */
-	public static final String NAME = "X-Cache";
+	public abstract String getName();
+
 	/**
-	 * 值
+	 * 获取字段的值
+	 * @return 字段的值
 	 */
-	private String value;
-	
-	public XCache(String value) {
-		setValue(value);
-	}
-	
-	public XCache() {
-		setValue("");
-	}
+	public abstract String getValue();
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+	/**
+	 * 设置字段的值
+	 * @param value 字段的值
+	 */
+	public abstract void setValue(String value);
 }

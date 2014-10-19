@@ -49,7 +49,7 @@ public class JsonActivity extends MyActivity {
 	}
 	
 	private void load(){
-		GoHttp.getInstance(getBaseContext()).execute(new BeijingWeatherRequest(), new JsonHttpResponseHandler<Weather>(getBaseContext(), Weather.class, true) {
+		GoHttp.with(getBaseContext()).execute(new BeijingWeatherRequest(), new JsonHttpResponseHandler<Weather>(getBaseContext(), Weather.class, true) {
 			@Override
 			protected void onStart() {
 				getHintView().loading("天气信息");

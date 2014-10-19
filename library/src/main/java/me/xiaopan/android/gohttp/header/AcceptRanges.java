@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-/**
- * 接受的文件类型
- */
-public class Accept extends HttpHeader {
+public class AcceptRanges extends HttpHeader{
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Accept";
+	public static final String NAME = "Accept-Ranges";
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public Accept(String value) {
+	public AcceptRanges(String value) {
 		setValue(value);
 	}
 	
-	public Accept() {
-		setValue("text/html, application/xml;q=0.9, application/xhtml xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1");
+	public AcceptRanges() {
+		setValue("bytes");
 	}
 
 	@Override

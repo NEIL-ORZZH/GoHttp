@@ -14,33 +14,38 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-
-public class ContentLength extends HttpHeader{
+public class Charset extends HttpHeader {
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Content-Length";
+	public static final String NAME = "Charset";
+	/**
+	 * 值
+	 */
+	public static final String VALUE_UTF8 = "utf-8";
+	/**
+	 * 值
+	 */
+	public static final String VALUE_ISO88591 = "iso-8859-1";
+	/**
+	 * 值
+	 */
+	public static final String VALUE_UTF16 = "utf-16";
 	/**
 	 * 值
 	 */
 	private String value;
-	/**
-	 * 长度
-	 */
-	private long length;
 	
-	public ContentLength(String value) {
+	public Charset(String value) {
 		setValue(value);
 	}
 	
-	public ContentLength(long length) {
-		setLength(length);
+	public Charset() {
+		setValue(VALUE_UTF8);
 	}
-	
+
 	@Override
 	public String getName() {
 		return NAME;
@@ -54,25 +59,5 @@ public class ContentLength extends HttpHeader{
 	@Override
 	public void setValue(String value) {
 		this.value = value;
-		if(value != null){
-			this.length = Long.valueOf(value);
-		}
-	}
-
-	public long getLength() {
-		return length;
-	}
-
-	public void setLength(long length) {
-		this.length = length;
-	}
-	
-	public static ContentLength getContentLength(HttpResponse httpResponse){
-		Header[] contentTypeString = httpResponse.getHeaders(ContentLength.NAME);
-		if(contentTypeString.length > 0){
-			return new ContentLength(contentTypeString[0].getValue());
-		}else{
-			return null;
-		}
 	}
 }

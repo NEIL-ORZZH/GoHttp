@@ -14,27 +14,38 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-/**
- * Http属性
- */
-public abstract class HttpHeader {
+public class LastModified extends HttpHeader{
 	/**
-	 * 获取字段名字
-	 * @return 字段名字
+	 * 名字
 	 */
-	public abstract String getName();
+	public static final String NAME = "Last-Modified";
+	/**
+	 * 值
+	 */
+	private String value;
+	
+	public LastModified(String value) {
+		setValue(value);
+	}
+	
+	public LastModified() {
+		setValue("");
+	}
 
-	/**
-	 * 获取字段的值
-	 * @return 字段的值
-	 */
-	public abstract String getValue();
+	@Override
+	public String getName() {
+		return NAME;
+	}
 
-	/**
-	 * 设置字段的值
-	 * @param value 字段的值
-	 */
-	public abstract void setValue(String value);
+	@Override
+	public String getValue() {
+		return value;
+	}
+
+	@Override
+	public void setValue(String value) {
+		this.value = value;
+	}
 }

@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class Connection extends HttpHeader{
+public class Expires extends HttpHeader{
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Connection";
-	/**
-	 * 值 - 保持状态
-	 */
-	public static final String VALUE_KEEP_ALIVE = "Keep-Alive";
-	/**
-	 * 值 - 关闭
-	 */
-	public static final String VALUE_CLOSE = "close";
+	public static final String NAME = "Expires";
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public Connection(String value) {
+	public Expires(String value) {
 		setValue(value);
 	}
 	
-	public Connection() {
-		setValue(VALUE_KEEP_ALIVE);
+	public Expires() {
+		setValue("");
 	}
 
 	@Override

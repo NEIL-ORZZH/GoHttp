@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class Date extends HttpHeader{
+public class Referer extends HttpHeader {
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Date";
+	public static final String NAME = "Referer";
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public Date(String value) {
+	public Referer(String value) {
 		setValue(value);
 	}
 	
-	public Date() {
+	public Referer() {
 		setValue("");
 	}
 

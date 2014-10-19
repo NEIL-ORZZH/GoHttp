@@ -29,7 +29,7 @@ public class DownloadActivity extends MyActivity {
 	private void load(){
 		File file = new File(getExternalCacheDir(), "800x600.jpg");
 
-        GoHttp.getInstance(getBaseContext()).get("http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529113_1384156076013_800x600.jpg", new DownloadHttpResponseHandler(file, true) {
+        GoHttp.with(getBaseContext()).get("http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529113_1384156076013_800x600.jpg", new DownloadHttpResponseHandler(file, true) {
 			@Override
 			public void onStart() {
 				getHintView().loading("");
@@ -66,6 +66,6 @@ public class DownloadActivity extends MyActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		GoHttp.getInstance(getBaseContext()).cancelRequests(requestTag, true);
+		GoHttp.with(getBaseContext()).cancelRequests(requestTag, true);
 	}
 }

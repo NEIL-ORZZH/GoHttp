@@ -14,24 +14,32 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.headers;
+package me.xiaopan.android.gohttp.header;
 
-public class Location extends HttpHeader{
+public class CacheControl extends HttpHeader{
 	/**
 	 * 名字
 	 */
-	public static final String NAME = "Location";
+	public static final String NAME = "Cache-Control";
+	/**
+	 * 值- 私有的
+	 */
+	public static final String VALUE_PRIVATE = "private"; 
+	/**
+	 * 值 - 不缓存
+	 */
+	public static final String VALUE_NO_CACHE_MUST_REVALIDATE = "no-cache, must-revalidate"; 
 	/**
 	 * 值
 	 */
 	private String value;
 	
-	public Location(String value) {
+	public CacheControl(String value) {
 		setValue(value);
 	}
 	
-	public Location() {
-		setValue("");
+	public CacheControl() {
+		setValue(VALUE_PRIVATE);
 	}
 
 	@Override
