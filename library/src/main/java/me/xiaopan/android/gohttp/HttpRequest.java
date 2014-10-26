@@ -53,7 +53,7 @@ public class HttpRequest{
     private List<String> cacheIgnoreParams;	// 计算缓存ID时候忽略的参数集
     private RequestParams params;   // 请求参数
     private ProgressListener progressListener;
-    private NewHttpResponseHandler responseHandler;    // 响应处理器
+    private HttpResponseHandler responseHandler;    // 响应处理器
 
     private boolean canceled;   // 是否已经取消
     private boolean finished;   // 是否已经完成
@@ -145,7 +145,7 @@ public class HttpRequest{
     /**
      * 获取响应处理器
      */
-    public NewHttpResponseHandler getResponseHandler() {
+    public HttpResponseHandler getResponseHandler() {
         return responseHandler;
     }
 
@@ -248,9 +248,9 @@ public class HttpRequest{
         private List<String> cacheIgnoreParams;	// 计算缓存ID时候忽略的参数集
         private RequestParams params;   // 请求参数
         private ProgressListener progressListener;
-        private NewHttpResponseHandler responseHandler;
+        private HttpResponseHandler responseHandler;
 
-        public Helper(GoHttp goHttp, String url, NewHttpResponseHandler responseHandler, Listener listener){
+        public Helper(GoHttp goHttp, String url, HttpResponseHandler responseHandler, Listener listener){
             if(goHttp == null){
                 throw new IllegalArgumentException("goHttp is null");
             }
@@ -271,7 +271,7 @@ public class HttpRequest{
             this.progressCallbackNumber = 100;
         }
 
-        public Helper(GoHttp goHttp, Request requestObject, NewHttpResponseHandler responseHandler, Listener listener){
+        public Helper(GoHttp goHttp, Request requestObject, HttpResponseHandler responseHandler, Listener listener){
             if(goHttp == null){
                 throw new IllegalArgumentException("goHttp is null");
             }

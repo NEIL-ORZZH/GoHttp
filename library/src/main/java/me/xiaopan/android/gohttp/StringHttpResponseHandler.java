@@ -25,7 +25,6 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.CharArrayBuffer;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,7 +33,7 @@ import java.io.Reader;
 /**
  * 默认的字符串Http响应处理器
  */
-public class StringHttpResponseHandler implements NewHttpResponseHandler {
+public class StringHttpResponseHandler implements HttpResponseHandler {
 
     @Override
     public boolean canCache(HttpResponse httpResponse) {

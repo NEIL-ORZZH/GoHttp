@@ -40,7 +40,7 @@ import me.xiaopan.android.gohttp.annotation.ResponseBody;
 /**
  * 默认的字符串Http响应处理器
  */
-public class JsonHttpResponseHandler implements NewHttpResponseHandler {
+public class JsonHttpResponseHandler implements HttpResponseHandler {
     private Class<?> responseClass;
     private Type responseType;
     private boolean excludeFieldsWithoutExposeAnnotation;

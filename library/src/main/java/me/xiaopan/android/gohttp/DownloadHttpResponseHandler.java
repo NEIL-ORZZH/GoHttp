@@ -6,7 +6,6 @@ import org.apache.http.client.HttpResponseException;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +14,7 @@ import java.io.OutputStream;
 /**
  * 下载Http响应处理器
  */
-public class DownloadHttpResponseHandler implements NewHttpResponseHandler{
+public class DownloadHttpResponseHandler implements HttpResponseHandler {
     private File file;
 
     public DownloadHttpResponseHandler(File file){

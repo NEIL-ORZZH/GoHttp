@@ -21,7 +21,7 @@ import org.apache.http.HttpResponse;
 /**
  * 响应处理器
  */
-public interface NewHttpResponseHandler {
+public interface HttpResponseHandler {
     /**
      * 判断是否可以缓存，当需要缓存HttpResponse的时候会先调用此方法判断是否可以缓存，例如：实现者可以在此方法里过滤掉状态码不是200的响应。默认为状态码大于等于200并且 小于300就返回true
      * @param httpResponse Http响应
