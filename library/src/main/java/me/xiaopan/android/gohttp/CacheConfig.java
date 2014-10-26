@@ -20,43 +20,37 @@ package me.xiaopan.android.gohttp;
  * 缓存配置信息
  */
 public class CacheConfig {
-	private String id; 
-	
-    /**
-     * 本地缓存缓存有效期，单位毫秒，超过此有效期本地缓存将被清除，然后直接从网络加载，小于0时永久有效
-     */
-    private int periodOfValidity = -1;
+    private int periodOfValidity = -1;  // 本地缓存缓存有效期，单位毫秒，超过此有效期本地缓存将被清除，然后直接从网络加载，小于0时永久有效
+	private String id;
+    private String cacheDirectory;  // 缓存目录
+    private boolean refreshCache;  // 当本地缓存可用的时候，是否依然从网络加载新的数据来刷新本地缓存
+    private boolean refreshCallback;  // 当刷新本地缓存完成的时候是否再次回调HttpResponseHandler.handleResponse()
+    private HttpRequest httpRequest;
 
     /**
-     * 当本地缓存可用的时候，是否依然从网络加载新的数据来刷新本地缓存
-     */
-    private boolean refreshCache;
-
-    /**
-     * 当刷新本地缓存完成的时候是否再次回调HttpResponseHandler.handleResponse()
-     */
-    private boolean refreshCallback;
-    
-    /**
-     * 缓存目录
-     */
-    private String cacheDirectory;
-    
-    /**
-     * 
+     *
      * @param periodOfValidity 有效期，单位毫秒
      */
     public CacheConfig(int periodOfValidity){
     	this.periodOfValidity = periodOfValidity;
     }
 
-    public CacheConfig(){}
+    public CacheConfig(){
+
+    }
+
+    public void attachHttpRequest(HttpRequest httpRequest){
+        this.httpRequest = httpRequest;
+    }
 
     /**
      * 获取ID
      * @return
      */
     public String getId() {
+        if(id == null){
+            id = httpRequest.generateCacheId();
+        }
 		return id;
 	}
 
@@ -64,6 +58,7 @@ public class CacheConfig {
 	 * 设置ID
 	 * @param id
 	 */
+    @Deprecated
 	public CacheConfig setId(String id) {
 		this.id = id;
 		return this;

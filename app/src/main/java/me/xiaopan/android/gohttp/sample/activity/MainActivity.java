@@ -15,11 +15,12 @@
  */
 package me.xiaopan.android.gohttp.sample.activity;
 
-import me.xiaopan.android.gohttp.sample.R;
+import android.os.Bundle;
+
 import me.xiaopan.android.gohttp.sample.MyListActivity;
+import me.xiaopan.android.gohttp.sample.R;
 import me.xiaopan.android.gohttp.sample.adapter.ActivityAdapter;
 import me.xiaopan.android.gohttp.sample.beans.ActivityItem;
-import android.os.Bundle;
 
 public class MainActivity extends MyListActivity {
 

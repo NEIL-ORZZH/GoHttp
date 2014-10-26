@@ -34,9 +34,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
+import me.xiaopan.android.gohttp.httpclient.SimpleMultipartEntity;
+
 /**
- * A collection of string request parameters or files to send along with
- * requests made from an {@link AsyncHttpClient} instance.
  * <p>
  * For example:
  * <p>

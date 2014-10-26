@@ -16,19 +16,6 @@
 
 package me.xiaopan.android.gohttp.sample.activity;
 
-import me.xiaopan.android.gohttp.GoHttp;
-import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.StringHttpResponseHandler;
-import me.xiaopan.android.gohttp.header.ContentType;
-import me.xiaopan.android.gohttp.sample.MyActivity;
-import me.xiaopan.android.gohttp.sample.net.Failure;
-import me.xiaopan.android.gohttp.sample.net.request.BaiduSearchRequest;
-import me.xiaopan.android.gohttp.sample.util.Utils;
-import me.xiaopan.android.gohttp.sample.util.WebViewManager;
-
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
@@ -36,6 +23,20 @@ import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+
+import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.android.gohttp.HttpRequest;
+import me.xiaopan.android.gohttp.NewStringHttpResponseHandler;
+import me.xiaopan.android.gohttp.header.ContentType;
+import me.xiaopan.android.gohttp.sample.MyActivity;
+import me.xiaopan.android.gohttp.sample.R;
+import me.xiaopan.android.gohttp.sample.net.Failure;
+import me.xiaopan.android.gohttp.sample.net.request.BaiduSearchRequest;
+import me.xiaopan.android.gohttp.sample.util.Utils;
+import me.xiaopan.android.gohttp.sample.util.WebViewManager;
 
 /**
  * 请求对象演示Demo
@@ -66,42 +67,47 @@ public class RequestObjectActivity extends MyActivity {
 	
 	@SuppressLint("HandlerLeak")
 	private void search(final String keyword){
-		GoHttp.with(getBaseContext()).execute(new BaiduSearchRequest(keyword), new StringHttpResponseHandler(true){
-			@Override
-			protected void onStart() {
+        GoHttp.with(getBaseContext()).newRequest(new BaiduSearchRequest(keyword), new NewStringHttpResponseHandler(), new HttpRequest.Listener<String>() {
+            @Override
+            public void onStarted(HttpRequest httpRequest) {
 				searchButton.setEnabled(false);
 				getHintView().loading(keyword+"相关信息");
-			}
-			
-			@Override
-			public void onUpdateProgress(long totalLength, long completedLength) {
-				getHintView().setProgress((int)totalLength, (int)completedLength);
-			}
+            }
 
-			@Override
-			protected void onSuccess(HttpResponse httpResponse, String responseContent, boolean isNotRefresh, boolean isOver) {
+            @Override
+            public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, String responseContent, boolean isCache, boolean isContinueCallback) {
 				Header contentTypeHeader = httpResponse.getEntity().getContentType();
 				ContentType contentType = new ContentType(contentTypeHeader.getValue());
 				webViewManager.getWebView().loadDataWithBaseURL(null, responseContent, contentType.getMimeType(), contentType.getCharset("UTF-8"), null);
-				if(isNotRefresh || isOver){
+				if(!isCache || !isContinueCallback){
 					searchButton.setEnabled(true);
 					getHintView().hidden();
 				}
-			}
-			
-			@Override
-			protected void onFailure(Throwable throwable, boolean isNotRefresh) {
+            }
+
+            @Override
+            public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean isCache, boolean isContinueCallback) {
 				searchButton.setEnabled(true);
-				if(isNotRefresh){
-					getHintView().failure(Failure.buildByException(getBaseContext(), throwable), new OnClickListener() {
+				if(!isCache){
+					getHintView().failure(Failure.buildByException(getBaseContext(), failure.getException()), new OnClickListener() {
 						@Override
 						public void onClick(View v) {
 							search(keyword);
 						}
 					});
 				}
-			}
-		});
+            }
+
+            @Override
+            public void onCanceled(HttpRequest httpRequest) {
+
+            }
+        }).progressListener(new HttpRequest.ProgressListener() {
+            @Override
+            public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength) {
+                getHintView().setProgress((int) totalLength, (int) completedLength);
+            }
+        }).go();
 	}
 
 	@Override

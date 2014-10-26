@@ -16,10 +16,12 @@
 package me.xiaopan.android.gohttp.sample.activity;
 
 import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.android.gohttp.HttpRequest;
+import me.xiaopan.android.gohttp.HttpRequestFuture;
+import me.xiaopan.android.gohttp.NewStringHttpResponseHandler;
+import me.xiaopan.android.gohttp.RequestFuture;
 import me.xiaopan.android.gohttp.sample.R;
 import me.xiaopan.android.gohttp.CacheConfig;
-import me.xiaopan.android.gohttp.HttpGetRequest;
-import me.xiaopan.android.gohttp.StringHttpResponseHandler;
 import me.xiaopan.android.gohttp.header.ContentType;
 import me.xiaopan.android.gohttp.sample.MyActivity;
 import me.xiaopan.android.gohttp.sample.net.Failure;
@@ -39,6 +41,7 @@ import android.webkit.WebView;
  */
 public class StringActivity extends MyActivity {
 	private WebViewManager webViewManager;
+    private HttpRequestFuture httpRequestFuture;
 	
 	@SuppressLint("HandlerLeak")
 	@Override
@@ -50,35 +53,41 @@ public class StringActivity extends MyActivity {
 	}
 	
 	private void load(){
-		GoHttp.with(getBaseContext()).get(new HttpGetRequest("http://www.miui.com/forum.php").setCacheConfig(new CacheConfig(20 * 1000)), new StringHttpResponseHandler(true){
-			@Override
-			protected void onStart() {
+        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest("http://www.miui.com/forum.php", new NewStringHttpResponseHandler(), new HttpRequest.Listener<String>() {
+            @Override
+            public void onStarted(HttpRequest httpRequest) {
 				getHintView().loading("MIUI首页");
-			}
-			
-			@Override
-			public void onUpdateProgress(long totalLength, long completedLength) {
-				getHintView().setProgress((int)totalLength, (int)completedLength);
-			}
+            }
 
-			@Override
-			protected void onSuccess(HttpResponse httpResponse, String responseContent, boolean isNotRefresh, boolean isOver) {
+            @Override
+            public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, String responseContent, boolean isCache, boolean isContinueCallback) {
 				Header contentTypeHeader = httpResponse.getEntity().getContentType();
 				ContentType contentType = new ContentType(contentTypeHeader.getValue());
 				webViewManager.getWebView().loadDataWithBaseURL(null, responseContent, contentType.getMimeType(), contentType.getCharset("UTF-8"), null);
 				getHintView().hidden();
-			}
-			
-			@Override
-			protected void onFailure(Throwable throwable, boolean isNotRefresh) {
-				getHintView().failure(Failure.buildByException(getBaseContext(), throwable), new OnClickListener() {
+            }
+
+            @Override
+            public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean isCache, boolean isContinueCallback) {
+				getHintView().failure(Failure.buildByException(getBaseContext(), failure.getException()), new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						load();
 					}
 				});
-			}
-		});
+            }
+
+            @Override
+            public void onCanceled(HttpRequest httpRequest) {
+
+            }
+        }).progressListener(new HttpRequest.ProgressListener() {
+            @Override
+            public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength) {
+				getHintView().setProgress((int)totalLength, (int)completedLength);
+            }
+        }).cacheConfig(new CacheConfig(20 * 1000))
+          .go();
 	}
 
 	@Override
@@ -89,4 +98,12 @@ public class StringActivity extends MyActivity {
 			super.onBackPressed();
 		}
 	}
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(httpRequestFuture != null && !httpRequestFuture.isFinished()){
+            httpRequestFuture.cancel(true);
+        }
+    }
 }

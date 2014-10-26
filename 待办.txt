@@ -1,0 +1,1 @@
+1. 缓存ID尚未计算，之前是在Request创建的时候计算的，现在考虑放在HttpRequestHandler中，然后让HttpRequest来实现具体的计算规则

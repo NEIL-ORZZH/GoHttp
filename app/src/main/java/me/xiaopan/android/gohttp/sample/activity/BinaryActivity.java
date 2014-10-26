@@ -16,6 +16,9 @@
 package me.xiaopan.android.gohttp.sample.activity;
 
 import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.android.gohttp.HttpRequest;
+import me.xiaopan.android.gohttp.HttpRequestFuture;
+import me.xiaopan.android.gohttp.NewBinaryHttpResponseHandler;
 import me.xiaopan.android.gohttp.sample.R;
 import me.xiaopan.android.gohttp.BinaryHttpResponseHandler;
 import me.xiaopan.android.gohttp.sample.MyActivity;
@@ -33,6 +36,7 @@ import android.widget.ImageView;
  * 使用BinaryResponseHandler下载图片
  */
 public class BinaryActivity extends MyActivity {
+    private HttpRequestFuture httpRequestFuture;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,32 +46,47 @@ public class BinaryActivity extends MyActivity {
 	}
 	
 	private void load(){
-		GoHttp.with(getBaseContext()).get("http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529113_1384156076013_800x600.jpg", new BinaryHttpResponseHandler(true) {
-			@Override
-			protected void onStart() {
+        String url = "http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529113_1384156076013_800x600.jpg";
+
+        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest(url, new NewBinaryHttpResponseHandler(), new HttpRequest.Listener<byte[]>() {
+            @Override
+            public void onStarted(HttpRequest httpRequest) {
 				getHintView().loading("图片");
-			}
-			
-			@Override
-			public void onUpdateProgress(long totalLength, long completedLength) {
-				getHintView().setProgress((int)totalLength, (int)completedLength);
-			}
-			
-			@Override
-			protected void onSuccess(HttpResponse httpResponse, byte[] binaryData, boolean isNotRefresh, boolean isOver) {
-				((ImageView) findViewById(R.id.image_binary)).setImageBitmap(BitmapFactory.decodeByteArray(binaryData, 0, binaryData.length));
+            }
+
+            @Override
+            public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, byte[] responseContent, boolean isCache, boolean isContinueCallback) {
+				((ImageView) findViewById(R.id.image_binary)).setImageBitmap(BitmapFactory.decodeByteArray(responseContent, 0, responseContent.length));
 				getHintView().hidden();
-			}
-			
-			@Override
-			protected void onFailure(Throwable throwable, boolean isNotRefresh) {
-				getHintView().failure(Failure.buildByException(getBaseContext(), throwable), new OnClickListener() {
+            }
+
+            @Override
+            public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean isCache, boolean isContinueCallback) {
+				getHintView().failure(Failure.buildByException(getBaseContext(), failure.getException()), new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						load();
 					}
 				});
-			}
-		});
+            }
+
+            @Override
+            public void onCanceled(HttpRequest httpRequest) {
+
+            }
+        }).progressListener(new HttpRequest.ProgressListener() {
+            @Override
+            public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength) {
+				getHintView().setProgress((int)totalLength, (int)completedLength);
+            }
+        }).go();
 	}
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(httpRequestFuture != null && !httpRequestFuture.isFinished()){
+            httpRequestFuture.cancel(true);
+        }
+    }
 }

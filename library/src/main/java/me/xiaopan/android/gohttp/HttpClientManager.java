@@ -16,12 +16,7 @@
 
 package me.xiaopan.android.gohttp;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import me.xiaopan.android.gohttp.interceptor.AddRequestHeaderRequestInterceptor;
-import me.xiaopan.android.gohttp.interceptor.GzipProcessRequestInterceptor;
-import me.xiaopan.android.gohttp.interceptor.GzipProcessResponseInterceptor;
+import android.util.Log;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -48,7 +43,14 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.SyncBasicHttpContext;
 
-import android.util.Log;
+import java.util.HashMap;
+import java.util.Map;
+
+import me.xiaopan.android.gohttp.httpclient.MySSLSocketFactory;
+import me.xiaopan.android.gohttp.httpclient.RetryHandler;
+import me.xiaopan.android.gohttp.interceptor.AddRequestHeaderRequestInterceptor;
+import me.xiaopan.android.gohttp.interceptor.GzipProcessRequestInterceptor;
+import me.xiaopan.android.gohttp.interceptor.GzipProcessResponseInterceptor;
 
 /**
  * Http客户端配置
@@ -215,7 +217,7 @@ public class HttpClientManager {
 	
 	/**
      * 设置Cookie仓库，将在发送请求时使用此Cookie仓库
-     * @param cookieStore 另请参见 {@link PersistentCookieStore}
+     * @param cookieStore 另请参见 {@link me.xiaopan.android.gohttp.HttpClientManager.PersistentCookieStore}
      */
     public void setCookieStore(CookieStore cookieStore) {
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);

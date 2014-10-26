@@ -17,18 +17,20 @@
 package me.xiaopan.android.gohttp.sample.activity;
 
 import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.android.gohttp.HttpRequest;
+import me.xiaopan.android.gohttp.HttpRequestFuture;
+import me.xiaopan.android.gohttp.NewJsonHttpResponseHandler;
 import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.JsonHttpResponseHandler;
 import me.xiaopan.android.gohttp.sample.MyActivity;
 import me.xiaopan.android.gohttp.sample.beans.Weather;
 import me.xiaopan.android.gohttp.sample.net.Failure;
-import me.xiaopan.android.gohttp.sample.net.request.BeijingWeatherRequest;
 
 import org.apache.http.HttpResponse;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -38,6 +40,7 @@ import android.widget.TextView;
  */
 public class JsonActivity extends MyActivity {
 	private TextView text;
+    private HttpRequestFuture httpRequestFuture;
 	
 	@SuppressLint("HandlerLeak")
 	@Override
@@ -49,46 +52,61 @@ public class JsonActivity extends MyActivity {
 	}
 	
 	private void load(){
-		GoHttp.with(getBaseContext()).execute(new BeijingWeatherRequest(), new JsonHttpResponseHandler<Weather>(getBaseContext(), Weather.class, true) {
-			@Override
-			protected void onStart() {
+        String url = "http://m.weather.com.cn/data/101010100.html";
+        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest(url, new NewJsonHttpResponseHandler(Weather.class), new HttpRequest.Listener<Weather>() {
+            @Override
+            public void onStarted(HttpRequest httpRequest) {
 				getHintView().loading("天气信息");
-			}
-			
-			@Override
-			public void onUpdateProgress(long totalLength, long completedLength) {
-				getHintView().setProgress((int)totalLength, (int)completedLength);
-			}
-			
-			@Override
-			protected void onSuccess(HttpResponse httpResponse, Weather responseObject, boolean isNotRefresh, boolean isOver) {
-				text.setText(Html.fromHtml("<h2>" + responseObject.getCity() + "</h2>"
-						+ "<br>" + responseObject.getDate_y() + " " + responseObject.getWeek()
-						+ "<br>" + responseObject.getTemp1() + " " + responseObject.getWeather1()
-						+ "<p><br>风力：" + responseObject.getWind1()
-						+ "<br>紫外线：" + responseObject.getIndex_uv()
-						+ "<br>紫外线（48小时）：" + responseObject.getIndex48_uv()
-						+ "<br>穿衣指数：" + responseObject.getIndex() + "，" + responseObject.getIndex_d()
-						+ "<br>穿衣指数（48小时）：" + responseObject.getIndex48() + "，" + responseObject.getIndex48_d()
-						+ "<br>舒适指数：" + responseObject.getIndex_co()
-						+ "<br>洗车指数：" + responseObject.getIndex_xc()
-						+ "<br>旅游指数：" + responseObject.getIndex_tr()
-						+ "<br>晨练指数：" + responseObject.getIndex_cl()
-						+ "<br>晾晒指数：" + responseObject.getIndex_ls()
-						+ "<br>过敏指数：" + responseObject.getIndex_ag() + "</p>"
+            }
+
+            @Override
+            public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, Weather responseContent, boolean isCache, boolean isContinueCallback) {
+				text.setText(Html.fromHtml("<h2>" + responseContent.getCity() + "</h2>"
+						+ "<br>" + responseContent.getDate_y() + " " + responseContent.getWeek()
+						+ "<br>" + responseContent.getTemp1() + " " + responseContent.getWeather1()
+						+ "<p><br>风力：" + responseContent.getWind1()
+						+ "<br>紫外线：" + responseContent.getIndex_uv()
+						+ "<br>紫外线（48小时）：" + responseContent.getIndex48_uv()
+						+ "<br>穿衣指数：" + responseContent.getIndex() + "，" + responseContent.getIndex_d()
+						+ "<br>穿衣指数（48小时）：" + responseContent.getIndex48() + "，" + responseContent.getIndex48_d()
+						+ "<br>舒适指数：" + responseContent.getIndex_co()
+						+ "<br>洗车指数：" + responseContent.getIndex_xc()
+						+ "<br>旅游指数：" + responseContent.getIndex_tr()
+						+ "<br>晨练指数：" + responseContent.getIndex_cl()
+						+ "<br>晾晒指数：" + responseContent.getIndex_ls()
+						+ "<br>过敏指数：" + responseContent.getIndex_ag() + "</p>"
 						));
 				getHintView().hidden();
-			}
-			
-			@Override
-			protected void onFailure(Throwable throwable, boolean isNotRefresh) {
-				getHintView().failure(Failure.buildByException(getBaseContext(), throwable), new OnClickListener() {
+            }
+
+            @Override
+            public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean isCache, boolean isContinueCallback) {
+				getHintView().failure(Failure.buildByException(getBaseContext(), failure.getException()), new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						load();
 					}
 				});
-			}
-		});
+            }
+
+            @Override
+            public void onCanceled(HttpRequest httpRequest) {
+
+            }
+        }).progressListener(new HttpRequest.ProgressListener() {
+            @Override
+            public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength) {
+                Log.e("进度", completedLength+" / "+totalLength);
+                getHintView().setProgress((int)totalLength, (int)completedLength);
+            }
+        }).go();
 	}
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(httpRequestFuture != null && !httpRequestFuture.isFinished()){
+            httpRequestFuture.cancel(true);
+        }
+    }
 }

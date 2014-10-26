@@ -18,8 +18,10 @@ package me.xiaopan.android.gohttp;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -59,13 +61,13 @@ public class RequestParser {
     	
         /* 优先解析Url注解 */
         String url = parseURLAnnotation(context, requestClass);
-        if(GeneralUtils.isNotEmpty(url)){
+        if(url != null && !"".equals(url)){
         	stringBuilder.append(url);
         }else{
         	/* 其次解析Host注解 */
         	if(stringBuilder.length() == 0){
         		String host = parseHostAnnotation(context, requestClass);
-        		if(GeneralUtils.isNotEmpty(host)){
+        		if(host != null && !"".equals(host)){
         			stringBuilder.append(host);
         		}
         	}
@@ -73,7 +75,7 @@ public class RequestParser {
         	/* 最后解析Path注解 */
         	if(stringBuilder.length() > 0){
         		String path = parsePathAnnotation(context, requestClass);
-        		if(GeneralUtils.isNotEmpty(path)){
+        		if(path != null && !"".equals(path)){
         			stringBuilder.append("/");
         			stringBuilder.append(path);
         		}
@@ -99,13 +101,13 @@ public class RequestParser {
     	
         /* 优先解析Url注解 */
         String url = parseURLAnnotation(context, requestClass);
-        if(GeneralUtils.isNotEmpty(url)){
+        if(url != null && !"".equals(url)){
         	stringBuilder.append(url);
         }else{
         	/* 其次解析Host注解 */
         	if(stringBuilder.length() == 0){
         		String host = parseHostAnnotation(context, requestClass);
-        		if(GeneralUtils.isNotEmpty(host)){
+        		if(host != null && !"".equals(host)){
         			stringBuilder.append(host);
         		}
         	}
@@ -113,7 +115,7 @@ public class RequestParser {
         	/* 最后解析Path注解 */
         	if(stringBuilder.length() > 0){
         		String path = parsePathAnnotation(context, requestClass);
-        		if(GeneralUtils.isNotEmpty(path)){
+        		if(path != null && !"".equals(path)){
         			stringBuilder.append("/");
         			stringBuilder.append(path);
         		}
@@ -125,7 +127,7 @@ public class RequestParser {
         	if(method == null || method.value() == MethodType.GET || method.value() == MethodType.DELETE){
         		RequestParams newParams = parseRequestParams(context, requestClass, extraRequestParams);
         		String paramString = newParams.getParamString();
-        		if(GeneralUtils.isNotEmpty(paramString)){
+        		if(paramString != null && !"".equals(paramString)){
         			stringBuilder.append(stringBuilder.indexOf("?") == -1?"?":"&");
         			stringBuilder.append(paramString);
         		}
@@ -158,19 +160,19 @@ public class RequestParser {
     	
         /* 优先解析Url注解 */
         String url = parseURLAnnotation(context, request.getClass());
-        if(GeneralUtils.isNotEmpty(url)){
+        if(url != null && !"".equals(url)){
         	stringBuilder.append(url);
         }else{
         	/* 其次解析Host注解 */
     		String host = parseHostAnnotation(context, request.getClass());
-    		if(GeneralUtils.isNotEmpty(host)){
+    		if(host != null && !"".equals(host)){
     			stringBuilder.append(host);
     		}
         	
         	/* 最后解析Path注解 */
         	if(stringBuilder.length() > 0){
         		String path = parsePathAnnotation(context, request.getClass());
-        		if(GeneralUtils.isNotEmpty(path)){
+        		if(path != null && !"".equals(path)){
         			stringBuilder.append("/");
         			stringBuilder.append(path);
         		}
@@ -182,7 +184,7 @@ public class RequestParser {
         	if(method == null || method.value() == MethodType.GET || method.value() == MethodType.DELETE){
         		RequestParams newParams = parseRequestParams(context, request, extraRequestParams);
         		String paramString = newParams.getParamString();
-        		if(GeneralUtils.isNotEmpty(paramString)){
+        		if(paramString != null && !"".equals(paramString)){
         			stringBuilder.append(stringBuilder.indexOf("?") == -1?"?":"&");
         			stringBuilder.append(paramString);
         		}
@@ -219,7 +221,7 @@ public class RequestParser {
         String requestParamName;
         String requestParamValue;
         Object requestParamValueObject = null;
-        for(Field field : GeneralUtils.getFields(requestClass, true, true, true)){
+        for(Field field : getFields(requestClass, true, true, true)){
             // 如果当前字段不是请求参数，或者不是静态的就跳过处理下一个字段
             if(!field.isAnnotationPresent(Param.class) || !Modifier.isStatic(field.getModifiers())){
                 continue;
@@ -258,7 +260,7 @@ public class RequestParser {
                     if(entry.getKey() != null && entry.getValue() != null){
                         String key =  entry.getKey().toString();
                         String value =  entry.getValue().toString();
-                        if(GeneralUtils.isNotEmpty(key, value)){
+                        if(key != null && !"".equals(key) && value != null && !"".equals(value)){
                             requestParams.put(key, value);
                         }
                     }
@@ -312,7 +314,7 @@ public class RequestParser {
 
             // 如果以上几种情况都不是就直接转为字符串添加到请求参数集中
             requestParamValue = requestParamValueObject.toString();
-            if(GeneralUtils.isNotEmpty(requestParamValue)){
+            if(requestParamValue != null && !"".equals(requestParamValue)){
                 requestParams.put(requestParamName, requestParamValue);
             }
         }
@@ -346,7 +348,7 @@ public class RequestParser {
         String requestParamName;
         String requestParamValue;
         Object requestParamValueObject = null;
-        for(Field field : GeneralUtils.getFields(request.getClass(), true, true, true)){
+        for(Field field : getFields(request.getClass(), true, true, true)){
             // 如果当前字段不是请求参数，就跳过处理下一个字段
             if(!field.isAnnotationPresent(Param.class)){
                 continue;
@@ -385,7 +387,7 @@ public class RequestParser {
                     if(entry.getKey() != null && entry.getValue() != null){
                         String key =  entry.getKey().toString();
                         String value =  entry.getValue().toString();
-                        if(GeneralUtils.isNotEmpty(key, value)){
+                        if(key != null && !"".equals(key) && value != null && !"".equals(value)){
                             requestParams.put(key, value);
                         }
                     }
@@ -439,7 +441,7 @@ public class RequestParser {
 
             // 如果以上几种情况都不是就直接转为字符串添加到请求参数集中
             requestParamValue = requestParamValueObject.toString();
-            if(GeneralUtils.isNotEmpty(requestParamValue)){
+            if(requestParamValue != null && !"".equals(requestParamValue)){
                 requestParams.put(requestParamName, requestParamValue);
             }
         }
@@ -464,7 +466,7 @@ public class RequestParser {
     @SuppressWarnings("unchecked")
     public static org.apache.http.Header[] parseRequestHeaders(Request request){
         List<org.apache.http.Header> finalHeaders = null;
-        for(Field field : GeneralUtils.getFields(request.getClass(), true, true, true)){
+        for(Field field : getFields(request.getClass(), true, true, true)){
             field.setAccessible(true);
             if(field.getAnnotation(Header.class) != null){	//如果当前字段被标记为需要序列化
                try {
@@ -475,7 +477,7 @@ public class RequestParser {
 								finalHeaders = new LinkedList<org.apache.http.Header>();
 							}
 	                    	finalHeaders.add((org.apache.http.Header) value);
-		                }else if(GeneralUtils.isArrayByType(field, org.apache.http.Header.class)){	//如果Header数组
+		                }else if(isArrayByType(field, org.apache.http.Header.class)){	//如果Header数组
 	                        org.apache.http.Header[] headers = (org.apache.http.Header[]) value;
 	                        for(org.apache.http.Header header : headers){
 	                            if(header != null){
@@ -485,7 +487,7 @@ public class RequestParser {
 	                            	finalHeaders.add(header);
 	                            }
 	                        }
-		                }else if(GeneralUtils.isCollectionByType(field, Collection.class, org.apache.http.Header.class)){	//如果是Header集合
+		                }else if(isCollectionByType(field, Collection.class, org.apache.http.Header.class)){	//如果是Header集合
 		                	if(finalHeaders == null){
 		                		finalHeaders = new LinkedList<org.apache.http.Header>();
 		                	}
@@ -516,7 +518,7 @@ public class RequestParser {
      */
     public static List<String> parseCacheIgnoreParams(Context context, Class<? extends Request> requestClass){
     	List<String> finalHeaders = null;
-        for(Field field : GeneralUtils.getFields(requestClass, true, true, true)){
+        for(Field field : getFields(requestClass, true, true, true)){
             field.setAccessible(true);
             if(field.getAnnotation(CacheIgnore.class) != null){	//如果当前字段被标记为在计算缓存ID的时候忽略
             	if(finalHeaders == null){
@@ -533,36 +535,6 @@ public class RequestParser {
     }
     
     /**
-     * 解析缓存ID
-     * @param context 上下文
-     * @param requestClass 请求对象的class
-     */
-    public static String parseCacheId(Context context, Class<? extends Request> requestClass){
-       CacheConfig cacheConfig = parseResponseCacheAnnotation(context, requestClass);
-       if(cacheConfig != null){
-    	   return GeneralUtils.createCacheId(cacheConfig, parseBaseUrl(context, requestClass), parseRequestParams(context, requestClass), parseCacheIgnoreParams(context, requestClass));
-       }else{
-    	   return null;
-       }
-    }
-    
-    /**
-     * 解析缓存ID
-     * @param context 上下文
-     * @param request 请求对象
-     */
-    public static String parseCacheId(Context context, Request request){
-    	Class<? extends Request> requestClass = request.getClass();
-    	CacheConfig cacheConfig = parseResponseCacheAnnotation(context, requestClass);
-    	if(cacheConfig != null){
-    		return GeneralUtils.createCacheId(cacheConfig, parseBaseUrl(context, requestClass), parseRequestParams(context, request), parseCacheIgnoreParams(context, requestClass));
-    	}else{
-    		return null;
-    	}
-    }
-
-
-    /**
      * 解析False注解
      * @param context 上下文
      * @param field 待解析的字段
@@ -572,8 +544,9 @@ public class RequestParser {
         if(annotation == null){
             return null;
         }
-        if(GeneralUtils.isNotEmpty(annotation.value())){
-            return annotation.value();
+        String annotationValue = annotation.value();
+        if(annotationValue != null && !"".equals(annotationValue)){
+            return annotationValue;
         }else if(context != null && annotation.resId() > 0){
             return context.getString(annotation.resId());
         }else{
@@ -591,8 +564,9 @@ public class RequestParser {
         if(annotation == null){
             return null;
         }
-        if(GeneralUtils.isNotEmpty(annotation.value())){
-            return annotation.value();
+        String annotationValue = annotation.value();
+        if(annotationValue != null && !"".equals(annotationValue)){
+            return annotationValue;
         }else if(context != null && annotation.resId() > 0){
             return context.getString(annotation.resId());
         }else{
@@ -610,8 +584,9 @@ public class RequestParser {
         if(annotation == null){
             return null;
         }
-        if(GeneralUtils.isNotEmpty(annotation.value())){
-            return annotation.value();
+        String annotationValue = annotation.value();
+        if(annotationValue != null && !"".equals(annotationValue)){
+            return annotationValue;
         }else if(context != null && annotation.resId() > 0){
             return context.getString(annotation.resId());
         }else{
@@ -629,8 +604,9 @@ public class RequestParser {
         if(annotation == null){
             return null;
         }
-        if(GeneralUtils.isNotEmpty(annotation.value())){
-            return annotation.value();
+        String annotationValue = annotation.value();
+        if(annotationValue != null && !"".equals(annotationValue)){
+            return annotationValue;
         }else if(context != null && annotation.resId() > 0){
             return context.getString(annotation.resId());
         }else{
@@ -648,27 +624,9 @@ public class RequestParser {
         if(annotation == null){
             return null;
         }
-        if(GeneralUtils.isNotEmpty(annotation.value())){
-            return annotation.value();
-        }else if(context != null && annotation.resId() > 0){
-            return context.getString(annotation.resId());
-        }else{
-            return null;
-        }
-    }
-
-    /**
-     * 解析响应体注解的值
-     * @param context 上下文
-     * @param responseClass 响应对象的class
-     */
-    public static String parseResponseBodyAnnotation(Context context, Class<?> responseClass){
-    	ResponseBody annotation = responseClass.getAnnotation(ResponseBody.class);
-        if(annotation == null){
-            return null;
-        }
-        if(GeneralUtils.isNotEmpty(annotation.value())){
-            return annotation.value();
+        String annotationValue = annotation.value();
+        if(annotationValue != null && !"".equals(annotationValue)){
+            return annotationValue;
         }else if(context != null && annotation.resId() > 0){
             return context.getString(annotation.resId());
         }else{
@@ -691,8 +649,9 @@ public class RequestParser {
         cacheConfig.setRefreshCache(annotation.isRefreshCache());
         cacheConfig.setPeriodOfValidity(annotation.periodOfValidity());
         cacheConfig.setRefreshCallback(annotation.isRefreshCallback());
-        if(GeneralUtils.isNotEmpty(annotation.cacheDirectory())){
-            cacheConfig.setCacheDirectory(annotation.cacheDirectory());
+        String cacheDirectory = annotation.cacheDirectory();
+        if(cacheDirectory != null && !"".equals(cacheDirectory)){
+            cacheConfig.setCacheDirectory(cacheDirectory);
         }else if(context != null && annotation.cacheDirectoryResId() > 0){
             cacheConfig.setCacheDirectory(context.getString(annotation.cacheDirectoryResId()));
         }
@@ -709,8 +668,9 @@ public class RequestParser {
         if(annotation == null){
             return null;
         }
-        if(GeneralUtils.isNotEmpty(annotation.value())){
-            return annotation.value();
+        String annotationValue = annotation.value();
+        if(annotationValue != null && !"".equals(annotationValue)){
+            return annotationValue;
         }else if(context != null && annotation.resId() > 0){
             return context.getString(annotation.resId());
         }else{
@@ -728,8 +688,9 @@ public class RequestParser {
         if(annotation == null){
             return null;
         }
-        if(GeneralUtils.isNotEmpty(annotation.value())){
-            return annotation.value();
+        String annotationValue = annotation.value();
+        if(annotationValue != null && !"".equals(annotationValue)){
+            return annotationValue;
         }else if(context != null && annotation.resId() > 0){
             return context.getString(annotation.resId());
         }else{
@@ -747,8 +708,9 @@ public class RequestParser {
         if(annotation == null){
             return null;
         }
-        if(GeneralUtils.isNotEmpty(annotation.value())){
-            return annotation.value();
+        String annotationValue = annotation.value();
+        if(annotationValue != null && !"".equals(annotationValue)){
+            return annotationValue;
         }else if(context != null && annotation.resId() > 0){
             return context.getString(annotation.resId());
         }else{
@@ -762,16 +724,102 @@ public class RequestParser {
      * @param enumObject 枚举对象
      */
     public static String parseValueAnnotationFromEnum(Context context, Enum<?> enumObject){
-        Value annotation = GeneralUtils.getAnnotationFromEnum(enumObject, Value.class);
+        Value annotation = null;
+        try {
+            annotation = enumObject.getClass().getField(enumObject.name()).getAnnotation(Value.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if(annotation == null){
             return null;
         }
-        if(GeneralUtils.isNotEmpty(annotation.value())){
-            return annotation.value();
+        String annotationValue = annotation.value();
+        if(annotationValue != null && !"".equals(annotationValue)){
+            return annotationValue;
         }else if(context != null && annotation.resId() > 0){
             return context.getString(annotation.resId());
         }else{
             return null;
+        }
+    }
+
+    /**
+     * 获取给定的类所有的父类
+     * @param sourceClass 给定的类
+     * @param isAddCurrentClass 是否将当年类放在最终返回的父类列表的首位
+     * @return 给定的类所有的父类
+     */
+    private static List<Class<?>> getSuperClasses(Class<?> sourceClass, boolean isAddCurrentClass){
+        List<Class<?>> classList = new ArrayList<Class<?>>();
+        Class<?> currentClass;
+        if(isAddCurrentClass){
+            currentClass = sourceClass;
+        }else{
+            currentClass = sourceClass.getSuperclass();
+        }
+        while(currentClass != null){
+            classList.add(currentClass);
+            currentClass = currentClass.getSuperclass();
+        }
+        return classList;
+    }
+
+    /**
+     * 获取给定类的所有字段
+     * @param sourceClass 给定的类
+     * @param isGetDeclaredField 是否需要获取Declared字段
+     * @param isFromSuperClassGet 是否需要把其父类中的字段也取出
+     * @param isDESCGet 在最终获取的列表里，父类的字段是否需要排在子类的前面。只有需要把其父类中的字段也取出时此参数才有效
+     * @return 给定类的所有字段
+     */
+    private static List<Field> getFields(Class<?> sourceClass, boolean isGetDeclaredField, boolean isFromSuperClassGet, boolean isDESCGet){
+        List<Field> fieldList = new ArrayList<Field>();
+        //如果需要从父类中获取
+        if(isFromSuperClassGet){
+            //获取当前类的所有父类
+            List<Class<?>> classList = getSuperClasses(sourceClass, true);
+
+            //如果是降序获取
+            if(isDESCGet){
+                for(int w = classList.size()-1; w > -1; w--){
+                    for(Field field : isGetDeclaredField ? classList.get(w).getDeclaredFields() : classList.get(w).getFields()){
+                        fieldList.add(field);
+                    }
+                }
+            }else{
+                for(int w = 0; w < classList.size(); w++){
+                    for(Field field : isGetDeclaredField ? classList.get(w).getDeclaredFields() : classList.get(w).getFields()){
+                        fieldList.add(field);
+                    }
+                }
+            }
+        }else{
+            for(Field field : isGetDeclaredField ? sourceClass.getDeclaredFields() : sourceClass.getFields()){
+                fieldList.add(field);
+            }
+        }
+        return fieldList;
+    }
+
+    /**
+     * 判断给定字段是否是type类型的数组
+     */
+    private static boolean isArrayByType(Field field, Class<?> type){
+        Class<?> fieldType = field.getType();
+        return fieldType.isArray() && type.isAssignableFrom(fieldType.getComponentType());
+    }
+
+    /**
+     * 判断给定字段是否是type类型的collectionType集合，例如collectionType=List.class，type=Date.class就是要判断给定字段是否是Date类型的List
+     */
+    @SuppressWarnings("rawtypes")
+    private static boolean isCollectionByType(Field field, Class<? extends Collection> collectionType, Class<?> type){
+        Class<?> fieldType = field.getType();
+        if(collectionType.isAssignableFrom(fieldType)){
+            Class<?> first = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+            return type.isAssignableFrom(first);
+        }else{
+            return false;
         }
     }
 }

@@ -16,7 +16,8 @@
 
 package me.xiaopan.android.gohttp.interceptor;
 
-import me.xiaopan.android.gohttp.InflatingEntity;
+import me.xiaopan.android.gohttp.HttpClientManager;
+import me.xiaopan.android.gohttp.httpclient.InflatingEntity;
 
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;

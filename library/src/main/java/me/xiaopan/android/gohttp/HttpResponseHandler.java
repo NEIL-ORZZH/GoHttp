@@ -109,7 +109,7 @@ public abstract class HttpResponseHandler{
      * @param httpResponse Http响应
      * @return 是否可以缓存
      */
-    protected boolean isCanCache(HttpResponse httpResponse){
+    protected boolean canCache(HttpResponse httpResponse){
     	return httpResponse.getStatusLine().getStatusCode() >= 200 && httpResponse.getStatusLine().getStatusCode() < 300;
     }
 

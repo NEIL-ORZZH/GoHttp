@@ -3,6 +3,9 @@ package me.xiaopan.android.gohttp.sample.activity;
 import java.io.File;
 
 import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.android.gohttp.HttpRequest;
+import me.xiaopan.android.gohttp.HttpRequestFuture;
+import me.xiaopan.android.gohttp.NewDownloadHttpResponseHandler;
 import me.xiaopan.android.gohttp.sample.R;
 import me.xiaopan.android.gohttp.DownloadHttpResponseHandler;
 import me.xiaopan.android.gohttp.sample.MyActivity;
@@ -14,9 +17,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
+import org.apache.http.HttpResponse;
+
 public class DownloadActivity extends MyActivity {
 	private ImageView imageView;
-    private Object requestTag = this;
+    private HttpRequestFuture httpRequestFuture;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,44 +33,47 @@ public class DownloadActivity extends MyActivity {
 	
 	private void load(){
 		File file = new File(getExternalCacheDir(), "800x600.jpg");
-
-        GoHttp.with(getBaseContext()).get("http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529113_1384156076013_800x600.jpg", new DownloadHttpResponseHandler(file, true) {
-			@Override
-			public void onStart() {
+        String url = "http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529113_1384156076013_800x600.jpg";
+        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest(url, new NewDownloadHttpResponseHandler(file), new HttpRequest.Listener<File>() {
+            @Override
+            public void onStarted(HttpRequest httpRequest) {
 				getHintView().loading("");
-			}
-			
-			@Override
-			public void onUpdateProgress(long totalLength, long completedLength) {
-				getHintView().setProgress((int)totalLength, (int)completedLength);
-			}
+            }
 
-			@Override
-			public void onSuccess(File file) {
-				imageView.setImageURI(Uri.fromFile(file));
+            @Override
+            public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, File responseContent, boolean isCache, boolean isContinueCallback) {
+				imageView.setImageURI(Uri.fromFile(responseContent));
 				getHintView().hidden();
-			}
+            }
 
-			@Override
-			public void onFailure(Throwable e) {
-				getHintView().failure(Failure.buildByException(getBaseContext(), e), new OnClickListener() {
+            @Override
+            public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean isCache, boolean isContinueCallback) {
+				getHintView().failure(Failure.buildByException(getBaseContext(), failure.getException()), new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						load();
 					}
 				});
-			}
+            }
 
-			@Override
-			protected void onCancel() {
+            @Override
+            public void onCanceled(HttpRequest httpRequest) {
 				Log.e("下载", "取消");
-			}
-		}, requestTag);
+            }
+        }).progressListener(new HttpRequest.ProgressListener() {
+            @Override
+            public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength) {
+                Log.e("进度", completedLength+" / "+totalLength);
+				getHintView().setProgress((int)totalLength, (int)completedLength);
+            }
+        }).go();
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		GoHttp.with(getBaseContext()).cancelRequests(requestTag, true);
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(httpRequestFuture != null && !httpRequestFuture.isFinished()){
+            httpRequestFuture.cancel(true);
+        }
+    }
 }

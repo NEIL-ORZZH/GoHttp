@@ -23,6 +23,6 @@ public class MyApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		GoHttp.with(getBaseContext()).getConfiguration().setDebugMode(true);
+		GoHttp.with(getBaseContext()).setDebugMode(BuildConfig.DEBUG);
 	}
 }
