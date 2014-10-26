@@ -19,7 +19,7 @@ package me.xiaopan.android.gohttp.sample.activity;
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.android.gohttp.HttpRequest;
 import me.xiaopan.android.gohttp.HttpRequestFuture;
-import me.xiaopan.android.gohttp.NewJsonHttpResponseHandler;
+import me.xiaopan.android.gohttp.JsonHttpResponseHandler;
 import me.xiaopan.android.gohttp.sample.R;
 import me.xiaopan.android.gohttp.sample.MyActivity;
 import me.xiaopan.android.gohttp.sample.beans.Weather;
@@ -53,7 +53,7 @@ public class JsonActivity extends MyActivity {
 	
 	private void load(){
         String url = "http://m.weather.com.cn/data/101010100.html";
-        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest(url, new NewJsonHttpResponseHandler(Weather.class), new HttpRequest.Listener<Weather>() {
+        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest(url, new JsonHttpResponseHandler(Weather.class), new HttpRequest.Listener<Weather>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
 				getHintView().loading("天气信息");

@@ -29,7 +29,6 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.CharArrayBuffer;
 import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,12 +40,12 @@ import me.xiaopan.android.gohttp.annotation.ResponseBody;
 /**
  * 默认的字符串Http响应处理器
  */
-public class NewJsonHttpResponseHandler implements NewHttpResponseHandler {
+public class JsonHttpResponseHandler implements NewHttpResponseHandler {
     private Class<?> responseClass;
     private Type responseType;
     private boolean excludeFieldsWithoutExposeAnnotation;
 
-    public NewJsonHttpResponseHandler(Class<?> responseClass, boolean excludeFieldsWithoutExposeAnnotation){
+    public JsonHttpResponseHandler(Class<?> responseClass, boolean excludeFieldsWithoutExposeAnnotation){
         if(responseClass == null){
             throw new IllegalArgumentException("responseClass cannot be null");
         }
@@ -55,7 +54,7 @@ public class NewJsonHttpResponseHandler implements NewHttpResponseHandler {
         this.excludeFieldsWithoutExposeAnnotation = excludeFieldsWithoutExposeAnnotation;
     }
 
-    public NewJsonHttpResponseHandler(Type responseType, boolean excludeFieldsWithoutExposeAnnotation){
+    public JsonHttpResponseHandler(Type responseType, boolean excludeFieldsWithoutExposeAnnotation){
         if(responseType == null){
             throw new IllegalArgumentException("responseType cannot be null");
         }
@@ -64,11 +63,11 @@ public class NewJsonHttpResponseHandler implements NewHttpResponseHandler {
         this.excludeFieldsWithoutExposeAnnotation = excludeFieldsWithoutExposeAnnotation;
     }
 
-    public NewJsonHttpResponseHandler(Class<?> responseClass){
+    public JsonHttpResponseHandler(Class<?> responseClass){
         this(responseClass ,false);
     }
 
-    public NewJsonHttpResponseHandler(Type responseType){
+    public JsonHttpResponseHandler(Type responseType){
         this(responseType ,false);
     }
 
@@ -133,7 +132,7 @@ public class NewJsonHttpResponseHandler implements NewHttpResponseHandler {
         if (contentLength < 0) {
             contentLength = 4096;
         }
-        String charset = NewStringHttpResponseHandler.getContentCharSet(entity);
+        String charset = StringHttpResponseHandler.getContentCharSet(entity);
         if (charset == null) {
             charset = defaultCharset;
         }

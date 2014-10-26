@@ -18,9 +18,8 @@ package me.xiaopan.android.gohttp.sample.activity;
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.android.gohttp.HttpRequest;
 import me.xiaopan.android.gohttp.HttpRequestFuture;
-import me.xiaopan.android.gohttp.NewBinaryHttpResponseHandler;
-import me.xiaopan.android.gohttp.sample.R;
 import me.xiaopan.android.gohttp.BinaryHttpResponseHandler;
+import me.xiaopan.android.gohttp.sample.R;
 import me.xiaopan.android.gohttp.sample.MyActivity;
 import me.xiaopan.android.gohttp.sample.net.Failure;
 
@@ -48,7 +47,7 @@ public class BinaryActivity extends MyActivity {
 	private void load(){
         String url = "http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529113_1384156076013_800x600.jpg";
 
-        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest(url, new NewBinaryHttpResponseHandler(), new HttpRequest.Listener<byte[]>() {
+        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest(url, new BinaryHttpResponseHandler(), new HttpRequest.Listener<byte[]>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
 				getHintView().loading("图片");

@@ -5,9 +5,8 @@ import java.io.File;
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.android.gohttp.HttpRequest;
 import me.xiaopan.android.gohttp.HttpRequestFuture;
-import me.xiaopan.android.gohttp.NewDownloadHttpResponseHandler;
-import me.xiaopan.android.gohttp.sample.R;
 import me.xiaopan.android.gohttp.DownloadHttpResponseHandler;
+import me.xiaopan.android.gohttp.sample.R;
 import me.xiaopan.android.gohttp.sample.MyActivity;
 import me.xiaopan.android.gohttp.sample.net.Failure;
 import android.net.Uri;
@@ -34,7 +33,7 @@ public class DownloadActivity extends MyActivity {
 	private void load(){
 		File file = new File(getExternalCacheDir(), "800x600.jpg");
         String url = "http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529113_1384156076013_800x600.jpg";
-        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest(url, new NewDownloadHttpResponseHandler(file), new HttpRequest.Listener<File>() {
+        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest(url, new DownloadHttpResponseHandler(file), new HttpRequest.Listener<File>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
 				getHintView().loading("");

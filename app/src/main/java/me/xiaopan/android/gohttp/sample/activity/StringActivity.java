@@ -18,7 +18,7 @@ package me.xiaopan.android.gohttp.sample.activity;
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.android.gohttp.HttpRequest;
 import me.xiaopan.android.gohttp.HttpRequestFuture;
-import me.xiaopan.android.gohttp.NewStringHttpResponseHandler;
+import me.xiaopan.android.gohttp.StringHttpResponseHandler;
 import me.xiaopan.android.gohttp.RequestFuture;
 import me.xiaopan.android.gohttp.sample.R;
 import me.xiaopan.android.gohttp.CacheConfig;
@@ -53,7 +53,7 @@ public class StringActivity extends MyActivity {
 	}
 	
 	private void load(){
-        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest("http://www.miui.com/forum.php", new NewStringHttpResponseHandler(), new HttpRequest.Listener<String>() {
+        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest("http://www.miui.com/forum.php", new StringHttpResponseHandler(), new HttpRequest.Listener<String>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
 				getHintView().loading("MIUI首页");

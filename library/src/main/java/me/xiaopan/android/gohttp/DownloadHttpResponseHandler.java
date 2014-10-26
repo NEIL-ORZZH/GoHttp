@@ -15,10 +15,10 @@ import java.io.OutputStream;
 /**
  * 下载Http响应处理器
  */
-public class NewDownloadHttpResponseHandler implements NewHttpResponseHandler{
+public class DownloadHttpResponseHandler implements NewHttpResponseHandler{
     private File file;
 
-    public NewDownloadHttpResponseHandler(File file){
+    public DownloadHttpResponseHandler(File file){
     	if(file == null){
             throw new IllegalArgumentException("file cannot be null");
     	}

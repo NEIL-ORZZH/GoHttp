@@ -29,7 +29,7 @@ import org.apache.http.HttpResponse;
 
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.android.gohttp.HttpRequest;
-import me.xiaopan.android.gohttp.NewStringHttpResponseHandler;
+import me.xiaopan.android.gohttp.StringHttpResponseHandler;
 import me.xiaopan.android.gohttp.header.ContentType;
 import me.xiaopan.android.gohttp.sample.MyActivity;
 import me.xiaopan.android.gohttp.sample.R;
@@ -67,7 +67,7 @@ public class RequestObjectActivity extends MyActivity {
 	
 	@SuppressLint("HandlerLeak")
 	private void search(final String keyword){
-        GoHttp.with(getBaseContext()).newRequest(new BaiduSearchRequest(keyword), new NewStringHttpResponseHandler(), new HttpRequest.Listener<String>() {
+        GoHttp.with(getBaseContext()).newRequest(new BaiduSearchRequest(keyword), new StringHttpResponseHandler(), new HttpRequest.Listener<String>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
 				searchButton.setEnabled(false);
