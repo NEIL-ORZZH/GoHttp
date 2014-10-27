@@ -86,6 +86,10 @@ public class HttpRequestHandler implements Runnable{
                     if(responseObject instanceof HttpRequest.Failure){
                         new FailedRunnable(httpRequest, httpResponse, (HttpRequest.Failure) responseObject, true, isContinueCallback).execute();
                     }else{
+                        if(httpRequest.getResponseHandleAfter() != null){
+                            //noinspection unchecked
+                            httpRequest.getResponseHandleAfter().onResponseHandleAfter(httpRequest, httpResponse, responseObject, true, isContinueCallback);
+                        }
                         new CompletedRunnable(httpRequest, httpResponse, responseObject, true, isContinueCallback).execute();
                     }
                     // 如果不刷新缓存就意味着请求已经结束了
@@ -191,6 +195,10 @@ public class HttpRequestHandler implements Runnable{
         if(responseObject instanceof HttpRequest.Failure){
             new FailedRunnable(httpRequest, httpResponse, (HttpRequest.Failure) responseObject, false, false).execute();
         }else{
+            if(httpRequest.getResponseHandleAfter() != null){
+                //noinspection unchecked
+                httpRequest.getResponseHandleAfter().onResponseHandleAfter(httpRequest, httpResponse, responseObject, false, false);
+            }
             new CompletedRunnable(httpRequest, httpResponse, responseObject, false, false).execute();
         }
     }

@@ -55,6 +55,7 @@ public class HttpRequest{
     private RequestParams params;   // 请求参数
     private ProgressListener progressCallback;
     private HttpResponseHandler responseHandler;    // 响应处理器
+    private ResponseHandleAfter responseHandleAfter;
 
     private boolean canceled;   // 是否已经取消
     private boolean finished;   // 是否已经完成
@@ -74,6 +75,7 @@ public class HttpRequest{
         this.progressCallback = helper.progressCallback;
         this.cacheIgnoreParams = helper.cacheIgnoreParams;
         this.progressCallbackNumber = helper.progressCallbackNumber;
+        this.responseHandleAfter = helper.responseHandleAfter;
 
         if(name == null){
             name = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()) + " "+method.name();
@@ -177,6 +179,10 @@ public class HttpRequest{
         return method;
     }
 
+    public ResponseHandleAfter getResponseHandleAfter() {
+        return responseHandleAfter;
+    }
+
     /**
      * 是否已经完成了
      */
@@ -242,6 +248,7 @@ public class HttpRequest{
         private RequestParams params;   // 请求参数
         private ProgressListener progressCallback;
         private HttpResponseHandler responseHandler;
+        private ResponseHandleAfter responseHandleAfter;
 
         public Helper(GoHttp goHttp, String url, HttpResponseHandler responseHandler, Listener listener){
             if(goHttp == null){
@@ -478,6 +485,15 @@ public class HttpRequest{
         }
 
         /**
+         * Response处理完成之后，会在异步线程中执行ResponseHandleAfter
+         * @param responseHandleAfter
+         */
+        public Helper responseHandleAfter(ResponseHandleAfter responseHandleAfter) {
+            this.responseHandleAfter = responseHandleAfter;
+            return this;
+        }
+
+        /**
          * 发送请求
          */
         public HttpRequestFuture go(){
@@ -571,6 +587,10 @@ public class HttpRequest{
          * @param completedLength 已完成长度
          */
         public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength);
+    }
+
+    public interface ResponseHandleAfter<T>{
+        public void onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, T responseContent, boolean isCache, boolean isContinueCallback);
     }
 
     public static class Failure{
