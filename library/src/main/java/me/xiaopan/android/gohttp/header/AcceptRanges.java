@@ -16,36 +16,26 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class AcceptRanges extends HttpHeader{
-	/**
-	 * 名字
-	 */
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
+public class AcceptRanges extends BasicHeader{
 	public static final String NAME = "Accept-Ranges";
-	/**
-	 * 值
-	 */
-	private String value;
-	
+
 	public AcceptRanges(String value) {
-		setValue(value);
+        super(NAME, value);
 	}
 	
-	public AcceptRanges() {
-		setValue("bytes");
-	}
+    public static AcceptRanges newDefault(){
+        return new AcceptRanges("bytes");
+    }
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static AcceptRanges fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new AcceptRanges(firstHeader.getValue());
+    }
 }

@@ -16,66 +16,45 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class ContentDisposition extends HttpHeader{
-	/**
-	 * 名字
-	 */
+import org.apache.http.Header;
+import org.apache.http.HeaderElement;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
+public class ContentDisposition extends BasicHeader{
 	public static final String NAME = "Content-Disposition";
-	/**
-	 * 值
-	 */
-	private String value;
 	private String disposition;
 	private String fileName;
 	
 	public ContentDisposition(String value) {
-		setValue(value);
-	}
-	
-	public ContentDisposition() {
-		setValue("");
-	}
+        super(NAME, value);
+        HeaderElement[] elements = getElements();
+        if(elements == null || elements.length <= 0){
+            new IllegalArgumentException("value is not valid : "+value).printStackTrace();
+            return;
+        }
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
+        disposition = elements[0].toString();
 
-	@Override
-	public String getValue() {
-		return value;
-	}
+        if(elements.length < 2){
+            new IllegalArgumentException("No second elements"+value).printStackTrace();
+            return;
+        }
 
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-		if(value != null){
-			String[] strs = GeneralUtils.split(value, ';');
-			if(strs.length > 0){
-				setDisposition(strs[0]);
-			}
-			if(strs.length > 1){
-				strs = GeneralUtils.split(strs[1], '=');
-				if(strs.length > 1){
-					setFileName(strs[1]);
-				}
-			}
-		}
-	}
+        fileName = elements[1].getValue();
+    }
 
-	public String getDisposition() {
-		return disposition;
-	}
+    public ContentDisposition(String disposition, String fileName){
+        super(NAME, disposition+"; filename=\""+fileName+"\"");
+        this.disposition = disposition;
+        this.fileName = fileName;
+    }
 
-	public void setDisposition(String disposition) {
-		this.disposition = disposition;
-	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
+    public static ContentDisposition fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new ContentDisposition(firstHeader.getValue());
+    }
 }

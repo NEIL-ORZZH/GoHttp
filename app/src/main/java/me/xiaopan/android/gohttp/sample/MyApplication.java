@@ -15,9 +15,9 @@
  */
 package me.xiaopan.android.gohttp.sample;
 
-import me.xiaopan.android.gohttp.GoHttp;
-
 import android.app.Application;
+
+import me.xiaopan.android.gohttp.GoHttp;
 
 public class MyApplication extends Application {
 	@Override

@@ -1,14 +1,5 @@
 package me.xiaopan.android.gohttp.sample.activity;
 
-import java.io.File;
-
-import me.xiaopan.android.gohttp.GoHttp;
-import me.xiaopan.android.gohttp.HttpRequest;
-import me.xiaopan.android.gohttp.HttpRequestFuture;
-import me.xiaopan.android.gohttp.DownloadHttpResponseHandler;
-import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.sample.MyActivity;
-import me.xiaopan.android.gohttp.sample.net.Failure;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +8,16 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 import org.apache.http.HttpResponse;
+
+import java.io.File;
+
+import me.xiaopan.android.gohttp.DownloadHttpResponseHandler;
+import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.android.gohttp.HttpRequest;
+import me.xiaopan.android.gohttp.HttpRequestFuture;
+import me.xiaopan.android.gohttp.sample.MyActivity;
+import me.xiaopan.android.gohttp.sample.R;
+import me.xiaopan.android.gohttp.sample.net.Failure;
 
 public class DownloadActivity extends MyActivity {
 	private ImageView imageView;

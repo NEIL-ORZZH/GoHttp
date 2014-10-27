@@ -16,39 +16,29 @@
 
 package me.xiaopan.android.gohttp.header;
 
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
 /**
  * 接受的文件类型
  */
-public class AcceptEncoding extends HttpHeader {
-	/**
-	 * 名字
-	 */
+public class AcceptEncoding extends BasicHeader {
 	public static final String NAME = "Accept-Encoding";
-	/**
-	 * 值
-	 */
-	private String value;
-	
+
 	public AcceptEncoding(String value) {
-		setValue(value);
-	}
-	
-	public AcceptEncoding() {
-		setValue("deflate, gzip, x-gzip, identity, *;q=0");
-	}
+        super(NAME, value);
+    }
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
+    public static AcceptEncoding newDefault(){
+        return new AcceptEncoding("deflate, gzip, x-gzip, identity, *;q=0");
+    }
 
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static AcceptEncoding fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new AcceptEncoding(firstHeader.getValue());
+    }
 }

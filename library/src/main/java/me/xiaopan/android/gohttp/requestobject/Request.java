@@ -17,7 +17,6 @@
 package me.xiaopan.android.gohttp.requestobject;
 
 import me.xiaopan.android.gohttp.MethodType;
-import me.xiaopan.android.gohttp.requestobject.Method;
 
 /**
  * 请求

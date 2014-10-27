@@ -1,15 +1,15 @@
 package me.xiaopan.android.gohttp.sample.net;
 
-import java.io.FileNotFoundException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import java.io.FileNotFoundException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 public class Failure {
 	private static final int CODE_EXCEPTION = 123142;	//错误码 - 异常

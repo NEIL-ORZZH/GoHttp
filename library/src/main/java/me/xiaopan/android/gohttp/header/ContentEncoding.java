@@ -16,36 +16,22 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class ContentEncoding extends HttpHeader{
-	/**
-	 * 名字
-	 */
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
+public class ContentEncoding extends BasicHeader{
 	public static final String NAME = "Content-Encoding";
-	/**
-	 * 值
-	 */
-	private String value;
-	
-	public ContentEncoding(String value) {
-		setValue(value);
-	}
-	
-	public ContentEncoding() {
-		setValue("gzip");
-	}
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
+	public ContentEncoding(String value){
+        super(NAME, value);
+    }
 
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static ContentEncoding fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new ContentEncoding(firstHeader.getValue());
+    }
 }

@@ -16,6 +16,8 @@
 
 package me.xiaopan.android.gohttp.requestobject;
 
+import android.content.Context;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
@@ -29,8 +31,6 @@ import java.util.Map;
 
 import me.xiaopan.android.gohttp.MethodType;
 import me.xiaopan.android.gohttp.RequestParams;
-
-import android.content.Context;
 
 /**
  * 请求解析器，用于解析继承于Request的请求对象

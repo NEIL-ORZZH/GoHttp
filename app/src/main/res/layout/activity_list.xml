@@ -1,5 +1,5 @@
 <!-- 列表页面 -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge>
 	<FrameLayout style="@style/page">
 		<ListView style="@style/match_match" />
 		

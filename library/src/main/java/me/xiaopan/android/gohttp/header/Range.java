@@ -16,15 +16,10 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class Range extends HttpHeader {
-	/**
-	 * 名字
-	 */
+import org.apache.http.message.BasicHeader;
+
+public class Range extends BasicHeader {
 	public static final String NAME = "Range";
-	/**
-	 * 值
-	 */
-	private String value;
 	/**
 	 * 开始位置
 	 */
@@ -35,41 +30,16 @@ public class Range extends HttpHeader {
 	private long endLocation;
 	
 	public Range(long startLocation, long endLocation) {
-		setStartLocation(startLocation);
-		setEndLocation(endLocation);
+        super(NAME, "bytes=" + startLocation + "-"+ endLocation);
+		this.startLocation = startLocation;
+		this.endLocation = endLocation;
 	}
 	
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public String getValue() {
-		if(value == null || "".equals(value.trim())){
-			value = "bytes=" + getStartLocation() + "-"+ getEndLocation();
-		}
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
-
 	public long getStartLocation() {
 		return startLocation;
 	}
 
-	public void setStartLocation(long startLocation) {
-		this.startLocation = startLocation;
-	}
-
 	public long getEndLocation() {
 		return endLocation;
-	}
-
-	public void setEndLocation(long endLocation) {
-		this.endLocation = endLocation;
 	}
 }

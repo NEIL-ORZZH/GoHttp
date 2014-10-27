@@ -16,12 +16,12 @@
 
 package me.xiaopan.android.gohttp.httpclient;
 
-import java.io.IOException;
-
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.protocol.HttpContext;
+
+import java.io.IOException;
 
 public class GzipProcessRequestInterceptor implements HttpRequestInterceptor{
 	/**

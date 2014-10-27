@@ -16,36 +16,26 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class P3P extends HttpHeader{
-	/**
-	 * 名字
-	 */
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
+public class P3P extends BasicHeader{
 	public static final String NAME = "P3P";
-	/**
-	 * 值
-	 */
-	private String value;
-	
+
 	public P3P(String value) {
-		setValue(value);
+		super(NAME, value);
 	}
 	
-	public P3P() {
-		setValue("CP=\" OTI DSP COR IVA OUR IND COM \"");
-	}
+    public static P3P newDefault(){
+        return new P3P("CP=\" OTI DSP COR IVA OUR IND COM \"");
+    }
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static P3P fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new P3P(firstHeader.getValue());
+    }
 }

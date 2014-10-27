@@ -16,36 +16,26 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class UserAgent extends HttpHeader {
-	/**
-	 * 名字
-	 */
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
+public class UserAgent extends BasicHeader {
 	public static final String NAME = "User-Agent";
-	/**
-	 * 值
-	 */
-	private String value;
-	
+
 	public UserAgent(String value) {
-		setValue(value);
-	}
-	
-	public UserAgent() {
-		setValue("Opera/9.80 (Windows NT 6.1; WOW64; U; Edition IBIS; zh-cn) Presto/2.10.289 Version/12.01");
-	}
+        super(NAME, value);
+    }
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
+    public static UserAgent newDefault(){
+        return new UserAgent("Opera/9.80 (Windows NT 6.1; WOW64; U; Edition IBIS; zh-cn) Presto/2.10.289 Version/12.01");
+    }
 
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static UserAgent fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new UserAgent(firstHeader.getValue());
+    }
 }

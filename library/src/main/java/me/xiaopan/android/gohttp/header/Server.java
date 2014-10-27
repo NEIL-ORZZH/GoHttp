@@ -16,10 +16,11 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class Server extends HttpHeader{
-	/**
-	 * 名字
-	 */
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
+public class Server extends BasicHeader{
 	public static final String NAME = "Server";
 	/**
 	 * 值 - 阿帕奇服务器
@@ -33,31 +34,20 @@ public class Server extends HttpHeader{
 	 * 值 - BWS服务器
 	 */
 	public static final String VALUE_BWS = "BWS/1.0";
-	/**
-	 * 值
-	 */
-	private String value;
-	
+
 	public Server(String value) {
-		setValue(value);
+		super(NAME, value);
 	}
 	
-	public Server() {
-		setValue(VALUE_BWS);
-	}
+    public static Server newDefault(){
+        return new Server(VALUE_BWS);
+    }
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static Server fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new Server(firstHeader.getValue());
+    }
 }

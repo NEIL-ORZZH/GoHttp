@@ -16,36 +16,26 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class AcceptCharset extends HttpHeader {
-	/**
-	 * 名字
-	 */
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
+public class AcceptCharset extends BasicHeader {
 	public static final String NAME = "Accept-Charset";
-	/**
-	 * 值
-	 */
-	private String value;
-	
+
 	public AcceptCharset(String value) {
-		setValue(value);
-	}
-	
-	public AcceptCharset() {
-		setValue("iso-8859-1, utf-8, utf-16, *;q=0.1");
-	}
+        super(NAME, value);
+    }
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
+    public static AcceptCharset newDefault(){
+        return new AcceptCharset("iso-8859-1, utf-8, utf-16, *;q=0.1");
+    }
 
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static AcceptCharset fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new AcceptCharset(firstHeader.getValue());
+    }
 }

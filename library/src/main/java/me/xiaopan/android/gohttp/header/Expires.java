@@ -16,36 +16,22 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class Expires extends HttpHeader{
-	/**
-	 * 名字
-	 */
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
+public class Expires extends BasicHeader{
 	public static final String NAME = "Expires";
-	/**
-	 * 值
-	 */
-	private String value;
-	
+
 	public Expires(String value) {
-		setValue(value);
+		super(NAME, value);
 	}
 	
-	public Expires() {
-		setValue("");
-	}
-
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static Expires fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new Expires(firstHeader.getValue());
+    }
 }

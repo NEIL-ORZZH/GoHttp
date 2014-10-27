@@ -16,36 +16,25 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class Referer extends HttpHeader {
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
+public class Referer extends BasicHeader {
 	/**
 	 * 名字
 	 */
 	public static final String NAME = "Referer";
-	/**
-	 * 值
-	 */
-	private String value;
-	
+
 	public Referer(String value) {
-		setValue(value);
+		super(NAME, value);
 	}
 	
-	public Referer() {
-		setValue("");
-	}
-
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static Referer fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new Referer(firstHeader.getValue());
+    }
 }

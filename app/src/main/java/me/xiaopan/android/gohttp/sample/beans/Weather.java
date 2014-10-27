@@ -15,9 +15,9 @@
  */
 package me.xiaopan.android.gohttp.sample.beans;
 
-import me.xiaopan.android.gohttp.requestobject.ResponseBody;
-
 import com.google.gson.annotations.Expose;
+
+import me.xiaopan.android.gohttp.requestobject.ResponseBody;
 
 /**
  * 天气

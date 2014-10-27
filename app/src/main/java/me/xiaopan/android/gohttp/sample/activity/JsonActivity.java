@@ -16,17 +16,6 @@
 
 package me.xiaopan.android.gohttp.sample.activity;
 
-import me.xiaopan.android.gohttp.GoHttp;
-import me.xiaopan.android.gohttp.HttpRequest;
-import me.xiaopan.android.gohttp.HttpRequestFuture;
-import me.xiaopan.android.gohttp.JsonHttpResponseHandler;
-import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.sample.MyActivity;
-import me.xiaopan.android.gohttp.sample.beans.Weather;
-import me.xiaopan.android.gohttp.sample.net.Failure;
-
-import org.apache.http.HttpResponse;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Html;
@@ -34,6 +23,17 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+
+import org.apache.http.HttpResponse;
+
+import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.android.gohttp.HttpRequest;
+import me.xiaopan.android.gohttp.HttpRequestFuture;
+import me.xiaopan.android.gohttp.JsonHttpResponseHandler;
+import me.xiaopan.android.gohttp.sample.MyActivity;
+import me.xiaopan.android.gohttp.sample.R;
+import me.xiaopan.android.gohttp.sample.beans.Weather;
+import me.xiaopan.android.gohttp.sample.net.Failure;
 
 /**
  * 获取天气信息

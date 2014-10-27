@@ -39,7 +39,7 @@ public class BinaryHttpResponseHandler implements HttpResponseHandler {
 		if(!(httpResponse.getStatusLine().getStatusCode() > 100 && httpResponse.getStatusLine().getStatusCode() < 300)){
             throw new HttpResponseException(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getStatusCode()+"："+ httpRequest.getUrl());
 		}
-		
+
 		HttpEntity httpEntity = httpResponse.getEntity();
 		if(httpEntity == null){
             throw new HttpResponseException(httpResponse.getStatusLine().getStatusCode(), "HttpEntity is null");

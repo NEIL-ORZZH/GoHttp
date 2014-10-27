@@ -15,21 +15,21 @@
  */
 package me.xiaopan.android.gohttp.sample.activity;
 
-import me.xiaopan.android.gohttp.GoHttp;
-import me.xiaopan.android.gohttp.HttpRequest;
-import me.xiaopan.android.gohttp.HttpRequestFuture;
-import me.xiaopan.android.gohttp.BinaryHttpResponseHandler;
-import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.sample.MyActivity;
-import me.xiaopan.android.gohttp.sample.net.Failure;
-
-import org.apache.http.HttpResponse;
-
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+
+import org.apache.http.HttpResponse;
+
+import me.xiaopan.android.gohttp.BinaryHttpResponseHandler;
+import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.android.gohttp.HttpRequest;
+import me.xiaopan.android.gohttp.HttpRequestFuture;
+import me.xiaopan.android.gohttp.sample.MyActivity;
+import me.xiaopan.android.gohttp.sample.R;
+import me.xiaopan.android.gohttp.sample.net.Failure;
 
 /**
  * 使用BinaryResponseHandler下载图片

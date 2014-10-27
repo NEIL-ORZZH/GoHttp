@@ -16,39 +16,29 @@
 
 package me.xiaopan.android.gohttp.header;
 
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
 /**
  * 接受的语言，默认为：en
  */
-public class AcceptLanguage extends HttpHeader {
-	/**
-	 * 名字
-	 */
+public class AcceptLanguage extends BasicHeader {
 	public static final String NAME = "Accept-Language";
-	/**
-	 * 值
-	 */
-	private String value;
-	
+
 	public AcceptLanguage(String value) {
-		setValue(value);
-	}
+        super(NAME, value);
+    }
+
+    public static AcceptLanguage newDefault(){
+        return new AcceptLanguage("en");
+    }
 	
-	public AcceptLanguage() {
-		setValue("en");
-	}
-
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static AcceptLanguage fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new AcceptLanguage(firstHeader.getValue());
+    }
 }

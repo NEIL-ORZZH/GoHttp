@@ -15,26 +15,24 @@
  */
 package me.xiaopan.android.gohttp.sample.activity;
 
-import me.xiaopan.android.gohttp.GoHttp;
-import me.xiaopan.android.gohttp.HttpRequest;
-import me.xiaopan.android.gohttp.HttpRequestFuture;
-import me.xiaopan.android.gohttp.StringHttpResponseHandler;
-import me.xiaopan.android.gohttp.RequestFuture;
-import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.CacheConfig;
-import me.xiaopan.android.gohttp.header.ContentType;
-import me.xiaopan.android.gohttp.sample.MyActivity;
-import me.xiaopan.android.gohttp.sample.net.Failure;
-import me.xiaopan.android.gohttp.sample.util.WebViewManager;
-
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
+
+import org.apache.http.HttpResponse;
+
+import me.xiaopan.android.gohttp.CacheConfig;
+import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.android.gohttp.HttpRequest;
+import me.xiaopan.android.gohttp.HttpRequestFuture;
+import me.xiaopan.android.gohttp.StringHttpResponseHandler;
+import me.xiaopan.android.gohttp.header.ContentType;
+import me.xiaopan.android.gohttp.sample.MyActivity;
+import me.xiaopan.android.gohttp.sample.R;
+import me.xiaopan.android.gohttp.sample.net.Failure;
+import me.xiaopan.android.gohttp.sample.util.WebViewManager;
 
 /**
  * 字符串
@@ -61,8 +59,7 @@ public class StringActivity extends MyActivity {
 
             @Override
             public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, String responseContent, boolean isCache, boolean isContinueCallback) {
-				Header contentTypeHeader = httpResponse.getEntity().getContentType();
-				ContentType contentType = new ContentType(contentTypeHeader.getValue());
+				ContentType contentType = ContentType.fromHttpMessage(httpResponse);
 				webViewManager.getWebView().loadDataWithBaseURL(null, responseContent, contentType.getMimeType(), contentType.getCharset("UTF-8"), null);
 				getHintView().hidden();
             }

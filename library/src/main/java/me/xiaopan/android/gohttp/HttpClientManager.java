@@ -46,11 +46,11 @@ import org.apache.http.protocol.SyncBasicHttpContext;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.xiaopan.android.gohttp.httpclient.MySSLSocketFactory;
-import me.xiaopan.android.gohttp.httpclient.RetryHandler;
 import me.xiaopan.android.gohttp.httpclient.AddRequestHeaderRequestInterceptor;
 import me.xiaopan.android.gohttp.httpclient.GzipProcessRequestInterceptor;
 import me.xiaopan.android.gohttp.httpclient.GzipProcessResponseInterceptor;
+import me.xiaopan.android.gohttp.httpclient.MySSLSocketFactory;
+import me.xiaopan.android.gohttp.httpclient.RetryHandler;
 
 /**
  * Http客户端配置

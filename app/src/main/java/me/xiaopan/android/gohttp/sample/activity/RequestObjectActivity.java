@@ -24,7 +24,6 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 
 import me.xiaopan.android.gohttp.GoHttp;
@@ -76,8 +75,7 @@ public class RequestObjectActivity extends MyActivity {
 
             @Override
             public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, String responseContent, boolean isCache, boolean isContinueCallback) {
-				Header contentTypeHeader = httpResponse.getEntity().getContentType();
-				ContentType contentType = new ContentType(contentTypeHeader.getValue());
+				ContentType contentType = ContentType.fromHttpMessage(httpResponse);
 				webViewManager.getWebView().loadDataWithBaseURL(null, responseContent, contentType.getMimeType(), contentType.getCharset("UTF-8"), null);
 				if(!isCache || !isContinueCallback){
 					searchButton.setEnabled(true);

@@ -16,36 +16,26 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class Vary extends HttpHeader{
-	/**
-	 * 名字
-	 */
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
+public class Vary extends BasicHeader{
 	public static final String NAME = "Vary";
-	/**
-	 * 值
-	 */
-	private String value;
-	
+
 	public Vary(String value) {
-		setValue(value);
+		super(NAME, value);
 	}
 	
-	public Vary() {
-		setValue("Accept-Encoding");
-	}
+    public static Vary newDefault(){
+        return new Vary("Accept-Encoding");
+    }
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static Vary fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new Vary(firstHeader.getValue());
+    }
 }

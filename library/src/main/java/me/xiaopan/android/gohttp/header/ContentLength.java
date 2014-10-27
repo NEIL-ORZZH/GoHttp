@@ -17,62 +17,29 @@
 package me.xiaopan.android.gohttp.header;
 
 import org.apache.http.Header;
-import org.apache.http.HttpResponse;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
 
-public class ContentLength extends HttpHeader{
-	/**
-	 * 名字
-	 */
+public class ContentLength extends BasicHeader{
 	public static final String NAME = "Content-Length";
-	/**
-	 * 值
-	 */
-	private String value;
-	/**
-	 * 长度
-	 */
-	private long length;
-	
+
 	public ContentLength(String value) {
-		setValue(value);
+		super(NAME, value);
 	}
 	
 	public ContentLength(long length) {
-		setLength(length);
+		this(String.valueOf(length));
 	}
 	
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-		if(value != null){
-			this.length = Long.valueOf(value);
-		}
-	}
-
 	public long getLength() {
-		return length;
+		return Long.valueOf(getValue());
 	}
 
-	public void setLength(long length) {
-		this.length = length;
-	}
-	
-	public static ContentLength getContentLength(HttpResponse httpResponse){
-		Header[] contentTypeString = httpResponse.getHeaders(ContentLength.NAME);
-		if(contentTypeString.length > 0){
-			return new ContentLength(contentTypeString[0].getValue());
-		}else{
-			return null;
-		}
-	}
+    public static ContentLength fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new ContentLength(firstHeader.getValue());
+    }
 }

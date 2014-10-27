@@ -16,44 +16,28 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class Connection extends HttpHeader{
-	/**
-	 * 名字
-	 */
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
+public class Connection extends BasicHeader{
 	public static final String NAME = "Connection";
-	/**
-	 * 值 - 保持状态
-	 */
 	public static final String VALUE_KEEP_ALIVE = "Keep-Alive";
-	/**
-	 * 值 - 关闭
-	 */
 	public static final String VALUE_CLOSE = "close";
-	/**
-	 * 值
-	 */
-	private String value;
-	
+
 	public Connection(String value) {
-		setValue(value);
-	}
+        super(NAME, value);
+    }
+
+    public static Connection newDefault(){
+        return new Connection(VALUE_KEEP_ALIVE);
+    }
 	
-	public Connection() {
-		setValue(VALUE_KEEP_ALIVE);
-	}
-
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static Connection fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new Connection(firstHeader.getValue());
+    }
 }

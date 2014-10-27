@@ -16,32 +16,22 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class Host extends HttpHeader {
-	/**
-	 * 名字
-	 */
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
+public class Host extends BasicHeader {
 	public static final String NAME = "Host";
-	/**
-	 * 值
-	 */
-	private String value;
-	
+
 	public Host(String value) {
-		setValue(value);
-	}
-	
-	@Override
-	public String getName() {
-		return NAME;
-	}
+        super(NAME, value);
+    }
 
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static Host fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new Host(firstHeader.getValue());
+    }
 }

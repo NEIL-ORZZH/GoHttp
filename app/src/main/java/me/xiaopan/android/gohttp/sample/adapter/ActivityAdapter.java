@@ -16,8 +16,6 @@
 
 package me.xiaopan.android.gohttp.sample.adapter;
 
-import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.sample.beans.ActivityItem;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -28,6 +26,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import me.xiaopan.android.gohttp.sample.R;
+import me.xiaopan.android.gohttp.sample.beans.ActivityItem;
 
 public class ActivityAdapter extends BaseAdapter {
 

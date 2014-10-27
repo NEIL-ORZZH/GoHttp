@@ -16,55 +16,51 @@
 
 package me.xiaopan.android.gohttp.header;
 
+import org.apache.http.Header;
+import org.apache.http.HeaderElement;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-
-public class ContentType extends HttpHeader{
-	/**
-	 * 名字
-	 */
+public class ContentType extends BasicHeader{
 	public static final String NAME = "Content-Type";
-	/**
-	 * 值
-	 */
-	private String value;
-	/**
-	 * 类型
-	 */
 	private String mimeType;
-	/**
-	 * 字符集
-	 */
 	private String charset;
-	
+
 	public ContentType(String value) {
-		setValue(value);
-	}
-	
-	public ContentType() {
-		setMimeType("text/html");
-		setCharset("utf-8");
-	}
+        super(NAME, value);
+        HeaderElement[] elements = getElements();
+        if(elements == null || elements.length <= 0){
+            new IllegalArgumentException("value is not valid : "+value).printStackTrace();
+            return;
+        }
+
+        mimeType = elements[0].toString();
+
+        if(elements.length < 2){
+            new IllegalArgumentException("No second elements"+value).printStackTrace();
+            return;
+        }
+
+        charset = elements[1].getValue();
+    }
+
+    public ContentType(String mimeType, String charset){
+        super(NAME, mimeType+";charset="+charset);
+        this.mimeType = mimeType;
+        this.charset = charset;
+    }
 
 	/**
 	 * 获取类型
 	 * @return 类型
 	 */
 	public String getMimeType() {
-		return mimeType;
+        return mimeType;
 	}
 	
-	/**
-	 * 设置类型
-	 * @param type 类型
-	 */
-	public void setMimeType(String type) {
-		this.mimeType = type;
-	}
-
 	/**
 	 * 获取字符集
 	 * @return 字符集
@@ -73,62 +69,15 @@ public class ContentType extends HttpHeader{
 		return charset;
 	}
 
-	/**
-	 * 获取字符集
-	 * @param defaultCharsetName 默认值
-	 * @return 字符集
-	 */
-	public String getCharset(String defaultCharsetName) {
-		return charset != null ? charset : defaultCharsetName;
-	}
+    /**
+     * 获取字符集
+     * @param defaultCharsetName 默认值
+     * @return 字符集
+     */
+    public String getCharset(String defaultCharsetName) {
+        return charset != null ? charset : defaultCharsetName;
+    }
 
-	/**
-	 * 设置字符集
-	 * @param textCharset 字符集
-	 */
-	public void setCharset(String textCharset) {
-		this.charset = textCharset;
-	}
-
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public String getValue() {
-		if(value == null || "".equals(value.trim())){
-			value = getMimeType()+";charset="+getCharset();
-		}
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-		if(value != null){
-			String[] strs = GeneralUtils.split(value, ';');
-			if(strs.length > 0){
-				setMimeType(strs[0]);
-			}
-			if(strs.length > 1){
-				strs = GeneralUtils.split(strs[1], '=');
-				if(strs.length > 1){
-					setCharset(strs[1]);
-				}
-			}
-		}
-	}
-	
-	public static ContentType valueOf(HttpResponse httpResponse){
-		Header[] contentTypeString = httpResponse.getHeaders(ContentType.NAME);
-		if(contentTypeString.length > 0){
-			return new ContentType(contentTypeString[0].getValue());
-		}else{
-			return null;
-		}
-	}
-	
 	/**
 	 * 根据文件类型获取Content-Type
 	 * @param fileType 文件类型，例如：.xml
@@ -476,6 +425,14 @@ public class ContentType extends HttpHeader{
 		type.put(".x_t", "application/x-x_t");
 		type.put(".xyz", "chemical/x-pdb");
 		type.put(".zip", "application/zip");
-		return type.get(fileType);
+		return type.get(fileType.toLowerCase());
 	}
+
+    public static ContentType fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new ContentType(firstHeader.getValue());
+    }
 }

@@ -16,36 +16,22 @@
 
 package me.xiaopan.android.gohttp.header;
 
-public class LastModified extends HttpHeader{
-	/**
-	 * 名字
-	 */
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
+import org.apache.http.message.BasicHeader;
+
+public class LastModified extends BasicHeader{
 	public static final String NAME = "Last-Modified";
-	/**
-	 * 值
-	 */
-	private String value;
-	
+
 	public LastModified(String value) {
-		setValue(value);
-	}
-	
-	public LastModified() {
-		setValue("");
+		super(NAME, value);
 	}
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public String getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public static LastModified fromHttpMessage(HttpMessage httpMessage){
+        Header firstHeader = httpMessage.getFirstHeader(NAME);
+        if(firstHeader == null){
+            return null;
+        }
+        return new LastModified(firstHeader.getValue());
+    }
 }

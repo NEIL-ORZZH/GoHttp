@@ -1,7 +1,5 @@
 package me.xiaopan.android.gohttp.sample.widget;
 
-import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.sample.net.Failure;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -17,6 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
+
+import me.xiaopan.android.gohttp.sample.R;
+import me.xiaopan.android.gohttp.sample.net.Failure;
 
 /**
  * 提示视图
