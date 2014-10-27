@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.interceptor;
-
-import me.xiaopan.android.gohttp.HttpClientManager;
-import me.xiaopan.android.gohttp.httpclient.InflatingEntity;
+package me.xiaopan.android.gohttp.httpclient;
 
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;

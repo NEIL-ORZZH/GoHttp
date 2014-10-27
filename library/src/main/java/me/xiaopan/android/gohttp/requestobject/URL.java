@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.annotation;
+package me.xiaopan.android.gohttp.requestobject;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -23,12 +23,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 当标有此注解的boolean类型的字段的值为false时，将会使用此注解的值作为请求参数的值
+ * 请求地址，其相当于@{@link Host}+"/"+@{@link Path}，如果请求对象上有此注解并且值也不为空，就直接使用此注解的值作为请求地址，而不会再去解析@{@link Host}和@{@link Path}了
  */
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-public @interface False{
+public @interface URL {
 	public String value() default "";
 	public int resId() default 0;
 }

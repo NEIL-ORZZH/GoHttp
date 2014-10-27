@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.interceptor;
+package me.xiaopan.android.gohttp.httpclient;
 
 import java.io.IOException;
 

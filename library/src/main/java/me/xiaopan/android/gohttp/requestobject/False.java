@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.enums;
+package me.xiaopan.android.gohttp.requestobject;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * 请求方式类型
- * Created by XIAOPAN on 13-11-24.
+ * 当标有此注解的boolean类型的字段的值为false时，将会使用此注解的值作为请求参数的值
  */
-public enum MethodType {
-    GET, POST, PUT, DELETE;
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface False{
+	public String value() default "";
+	public int resId() default 0;
 }

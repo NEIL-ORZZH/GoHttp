@@ -17,11 +17,11 @@
 package me.xiaopan.android.gohttp.sample.net.request;
 
 import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.annotation.CacheConfig;
-import me.xiaopan.android.gohttp.annotation.Name;
-import me.xiaopan.android.gohttp.annotation.Param;
-import me.xiaopan.android.gohttp.annotation.URL;
-import me.xiaopan.android.gohttp.annotation.Value;
+import me.xiaopan.android.gohttp.requestobject.CacheConfig;
+import me.xiaopan.android.gohttp.requestobject.Name;
+import me.xiaopan.android.gohttp.requestobject.Param;
+import me.xiaopan.android.gohttp.requestobject.URL;
+import me.xiaopan.android.gohttp.requestobject.Value;
 import me.xiaopan.android.gohttp.sample.net.BaseRequest;
 
 /**

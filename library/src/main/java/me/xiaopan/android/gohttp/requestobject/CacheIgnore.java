@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.annotation;
+package me.xiaopan.android.gohttp.requestobject;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -23,12 +23,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 当标有此注解的boolean类型的字段的值为true时，将会使用此注解的值作为请求参数的值
+ * 加了此注解的字段在计算缓存ID的时候会被忽略
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-public @interface True {
-	public String value() default "";
-	public int resId() default 0;
+public @interface CacheIgnore {
+
 }

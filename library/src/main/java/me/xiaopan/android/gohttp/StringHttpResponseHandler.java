@@ -78,7 +78,7 @@ public class StringHttpResponseHandler implements HttpResponseHandler {
         int callbackNumber = 0;
         Reader reader = new InputStreamReader(inputStream, charset);
         CharArrayBuffer buffer = new CharArrayBuffer(contentLength);
-        HttpRequest.ProgressListener progressListener = httpRequest.getProgressListener();
+        HttpRequest.ProgressListener progressListener = httpRequest.getProgressCallback();
         try {
             char[] tmp = new char[1024];
             int readLength;

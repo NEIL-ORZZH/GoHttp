@@ -81,10 +81,10 @@ public class StringActivity extends MyActivity {
             public void onCanceled(HttpRequest httpRequest) {
 
             }
-        }).progressListener(new HttpRequest.ProgressListener() {
+        }).progressCallback(new HttpRequest.ProgressListener() {
             @Override
             public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength) {
-				getHintView().setProgress((int)totalLength, (int)completedLength);
+                getHintView().setProgress((int) totalLength, (int) completedLength);
             }
         }).cacheConfig(new CacheConfig(20 * 1000))
           .go();

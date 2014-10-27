@@ -15,7 +15,7 @@
  */
 package me.xiaopan.android.gohttp.sample.beans;
 
-import me.xiaopan.android.gohttp.annotation.ResponseBody;
+import me.xiaopan.android.gohttp.requestobject.ResponseBody;
 
 import com.google.gson.annotations.Expose;
 

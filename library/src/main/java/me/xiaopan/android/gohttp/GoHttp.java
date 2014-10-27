@@ -23,6 +23,8 @@ import android.os.Looper;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import me.xiaopan.android.gohttp.requestobject.Request;
+
 /**
  * Http客户端，所有的Http操作都将由此类来异步完成，同时此类提供一个单例模式来方便直接使用
  */

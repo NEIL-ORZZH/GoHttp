@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.annotation;
+package me.xiaopan.android.gohttp.requestobject;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

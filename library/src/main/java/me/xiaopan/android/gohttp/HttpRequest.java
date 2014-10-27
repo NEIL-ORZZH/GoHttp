@@ -34,8 +34,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import me.xiaopan.android.gohttp.annotation.Method;
-import me.xiaopan.android.gohttp.enums.MethodType;
+import me.xiaopan.android.gohttp.requestobject.Method;
+import me.xiaopan.android.gohttp.requestobject.Request;
+import me.xiaopan.android.gohttp.requestobject.RequestParser;
 
 /**
  * Http请求
@@ -52,7 +53,7 @@ public class HttpRequest{
     private List<Header> headers;   // 请求头信息
     private List<String> cacheIgnoreParams;	// 计算缓存ID时候忽略的参数集
     private RequestParams params;   // 请求参数
-    private ProgressListener progressListener;
+    private ProgressListener progressCallback;
     private HttpResponseHandler responseHandler;    // 响应处理器
 
     private boolean canceled;   // 是否已经取消
@@ -70,7 +71,7 @@ public class HttpRequest{
         this.httpEntity = helper.httpEntity;
         this.cacheConfig = helper.cacheConfig;
         this.responseHandler = helper.responseHandler;
-        this.progressListener = helper.progressListener;
+        this.progressCallback = helper.progressCallback;
         this.cacheIgnoreParams = helper.cacheIgnoreParams;
         this.progressCallbackNumber = helper.progressCallbackNumber;
 
@@ -135,14 +136,6 @@ public class HttpRequest{
     }
 
     /**
-     * 获取计算缓存ID时候忽略的参数集
-     * @return 计算缓存ID时候忽略的参数集
-     */
-    public List<String> getCacheIgnoreParams() {
-		return cacheIgnoreParams;
-	}
-
-    /**
      * 获取响应处理器
      */
     public HttpResponseHandler getResponseHandler() {
@@ -176,8 +169,8 @@ public class HttpRequest{
         return listener;
     }
 
-    public ProgressListener getProgressListener() {
-        return progressListener;
+    public ProgressListener getProgressCallback() {
+        return progressCallback;
     }
 
     public MethodType getMethod() {
@@ -247,7 +240,7 @@ public class HttpRequest{
         private List<Header> headers;   // 请求头信息
         private List<String> cacheIgnoreParams;	// 计算缓存ID时候忽略的参数集
         private RequestParams params;   // 请求参数
-        private ProgressListener progressListener;
+        private ProgressListener progressCallback;
         private HttpResponseHandler responseHandler;
 
         public Helper(GoHttp goHttp, String url, HttpResponseHandler responseHandler, Listener listener){
@@ -468,10 +461,10 @@ public class HttpRequest{
 
         /**
          * 设置进度监听器
-         * @param progressListener 进度监听器
+         * @param progressCallback 进度监听器
          */
-        public Helper progressListener(ProgressListener progressListener) {
-            this.progressListener = progressListener;
+        public Helper progressCallback(ProgressListener progressCallback) {
+            this.progressCallback = progressCallback;
             return this;
         }
 

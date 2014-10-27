@@ -35,7 +35,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 
-import me.xiaopan.android.gohttp.annotation.ResponseBody;
+import me.xiaopan.android.gohttp.requestobject.ResponseBody;
 
 /**
  * 默认的字符串Http响应处理器
@@ -144,7 +144,7 @@ public class JsonHttpResponseHandler implements HttpResponseHandler {
         int callbackNumber = 0;
         Reader reader = new InputStreamReader(inputStream, charset);
         CharArrayBuffer buffer = new CharArrayBuffer(contentLength);
-        HttpRequest.ProgressListener progressListener = httpRequest.getProgressListener();
+        HttpRequest.ProgressListener progressListener = httpRequest.getProgressCallback();
         try {
             char[] tmp = new char[1024];
             int readLength;

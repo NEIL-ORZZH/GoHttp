@@ -16,13 +16,10 @@
 
 package me.xiaopan.android.gohttp;
 
-import me.xiaopan.android.gohttp.annotation.Method;
-import me.xiaopan.android.gohttp.enums.MethodType;
-
 /**
- * 请求
+ * 请求方式类型
+ * Created by XIAOPAN on 13-11-24.
  */
-@Method(MethodType.GET)
-public interface Request {
-
+public enum MethodType {
+    GET, POST, PUT, DELETE;
 }

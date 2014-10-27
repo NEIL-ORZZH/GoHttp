@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp;
+package me.xiaopan.android.gohttp.requestobject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -28,19 +27,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import me.xiaopan.android.gohttp.annotation.CacheIgnore;
-import me.xiaopan.android.gohttp.annotation.False;
-import me.xiaopan.android.gohttp.annotation.Header;
-import me.xiaopan.android.gohttp.annotation.Host;
-import me.xiaopan.android.gohttp.annotation.Method;
-import me.xiaopan.android.gohttp.annotation.Name;
-import me.xiaopan.android.gohttp.annotation.Param;
-import me.xiaopan.android.gohttp.annotation.Path;
-import me.xiaopan.android.gohttp.annotation.ResponseBody;
-import me.xiaopan.android.gohttp.annotation.True;
-import me.xiaopan.android.gohttp.annotation.URL;
-import me.xiaopan.android.gohttp.annotation.Value;
-import me.xiaopan.android.gohttp.enums.MethodType;
+import me.xiaopan.android.gohttp.MethodType;
+import me.xiaopan.android.gohttp.RequestParams;
+
 import android.content.Context;
 
 /**
@@ -639,13 +628,13 @@ public class RequestParser {
      * @param context 上下文
      * @param requestClass 请求对象的class
      */
-    public static CacheConfig parseResponseCacheAnnotation(Context context, Class<? extends Request> requestClass){
-        me.xiaopan.android.gohttp.annotation.CacheConfig annotation = requestClass.getAnnotation(me.xiaopan.android.gohttp.annotation.CacheConfig.class);
+    public static me.xiaopan.android.gohttp.CacheConfig parseResponseCacheAnnotation(Context context, Class<? extends Request> requestClass){
+        me.xiaopan.android.gohttp.requestobject.CacheConfig annotation = requestClass.getAnnotation(me.xiaopan.android.gohttp.requestobject.CacheConfig.class);
         if(annotation == null){
             return null;
         }
         
-        CacheConfig cacheConfig = new CacheConfig();
+        me.xiaopan.android.gohttp.CacheConfig cacheConfig = new me.xiaopan.android.gohttp.CacheConfig();
         cacheConfig.setRefreshCache(annotation.isRefreshCache());
         cacheConfig.setPeriodOfValidity(annotation.periodOfValidity());
         cacheConfig.setRefreshCallback(annotation.isRefreshCallback());

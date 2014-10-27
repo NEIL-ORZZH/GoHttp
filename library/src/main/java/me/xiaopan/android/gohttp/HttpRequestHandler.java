@@ -276,7 +276,7 @@ public class HttpRequestHandler implements Runnable{
 
         @Override
         public void run() {
-            httpRequest.getProgressListener().onUpdateProgress(httpRequest, totalLength, completedLength);
+            httpRequest.getProgressCallback().onUpdateProgress(httpRequest, totalLength, completedLength);
         }
 
         public void execute(){

@@ -16,9 +16,9 @@
 
 package me.xiaopan.android.gohttp.sample.net;
 
-import me.xiaopan.android.gohttp.Request;
-import me.xiaopan.android.gohttp.annotation.Method;
-import me.xiaopan.android.gohttp.enums.MethodType;
+import me.xiaopan.android.gohttp.requestobject.Request;
+import me.xiaopan.android.gohttp.requestobject.Method;
+import me.xiaopan.android.gohttp.MethodType;
 
 /**
  * 基本请求，可以将一些每个请求都必须有的参数定义在此

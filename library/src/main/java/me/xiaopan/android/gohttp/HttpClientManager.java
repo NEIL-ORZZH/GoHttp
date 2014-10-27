@@ -48,9 +48,9 @@ import java.util.Map;
 
 import me.xiaopan.android.gohttp.httpclient.MySSLSocketFactory;
 import me.xiaopan.android.gohttp.httpclient.RetryHandler;
-import me.xiaopan.android.gohttp.interceptor.AddRequestHeaderRequestInterceptor;
-import me.xiaopan.android.gohttp.interceptor.GzipProcessRequestInterceptor;
-import me.xiaopan.android.gohttp.interceptor.GzipProcessResponseInterceptor;
+import me.xiaopan.android.gohttp.httpclient.AddRequestHeaderRequestInterceptor;
+import me.xiaopan.android.gohttp.httpclient.GzipProcessRequestInterceptor;
+import me.xiaopan.android.gohttp.httpclient.GzipProcessResponseInterceptor;
 
 /**
  * Http客户端配置

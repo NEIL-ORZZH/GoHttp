@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.annotation;
+package me.xiaopan.android.gohttp.requestobject;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 表明此字段是请求参数，只有加了此注解的字段才会被解析
+ * 在使用JsonHttpResponseHandler的时候，如果你在要转换的目标类上加了此注解，那么将在返回的json字符串中取出键为此注解的值的json字符串来转换为目标类
  */
-@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Param {
-    /**
-     * 请求参数名称，如果此参数为null或空就会去考虑resId参数
-     */
+@Target(ElementType.TYPE)
+@Inherited
+public @interface ResponseBody {
 	public String value() default "";
-
-    /**
-     * 请求参数名称的资源ID，在解析的时候会通过Context.getString(int resId)来获取请求参数名称，
-     * <br>只有在value参数为null或空的话才会去考虑resId参数
-     */
 	public int resId() default 0;
 }

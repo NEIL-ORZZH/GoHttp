@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.annotation;
+package me.xiaopan.android.gohttp.requestobject;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -23,12 +23,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 用于配制请求地址的主机部分，例如："http://baidu.com/index.jsp"中的"http://baidu.com"
+ * 用于配制请求地址的路径部分，例如："http://baidu.com/index.jsp"中的"index.jsp"
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-public @interface Host {
+public @interface Path {
 	public String value() default "";
 	public int resId() default 0;
 }

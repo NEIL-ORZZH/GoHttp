@@ -73,10 +73,10 @@ public class BinaryActivity extends MyActivity {
             public void onCanceled(HttpRequest httpRequest) {
 
             }
-        }).progressListener(new HttpRequest.ProgressListener() {
+        }).progressCallback(new HttpRequest.ProgressListener() {
             @Override
             public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength) {
-				getHintView().setProgress((int)totalLength, (int)completedLength);
+                getHintView().setProgress((int) totalLength, (int) completedLength);
             }
         }).go();
 	}

@@ -59,11 +59,11 @@ public class DownloadActivity extends MyActivity {
             public void onCanceled(HttpRequest httpRequest) {
 				Log.e("下载", "取消");
             }
-        }).progressListener(new HttpRequest.ProgressListener() {
+        }).progressCallback(new HttpRequest.ProgressListener() {
             @Override
             public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength) {
-                Log.e("进度", completedLength+" / "+totalLength);
-				getHintView().setProgress((int)totalLength, (int)completedLength);
+                Log.e("进度", completedLength + " / " + totalLength);
+                getHintView().setProgress((int) totalLength, (int) completedLength);
             }
         }).go();
 	}
