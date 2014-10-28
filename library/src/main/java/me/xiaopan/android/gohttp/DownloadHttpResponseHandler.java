@@ -120,7 +120,7 @@ public class DownloadHttpResponseHandler implements HttpResponseHandler {
 
         long averageLength = contentLength/httpRequest.getProgressCallbackNumber();
         int callbackNumber = 0;
-        HttpRequest.ProgressListener progressListener = httpRequest.getProgressCallback();
+        HttpRequest.ProgressListener progressListener = httpRequest.getProgressListener();
         try {
             byte[] tmp = new byte[4096];
             int readLength;

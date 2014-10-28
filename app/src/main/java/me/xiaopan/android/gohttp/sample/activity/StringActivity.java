@@ -78,7 +78,7 @@ public class StringActivity extends MyActivity {
             public void onCanceled(HttpRequest httpRequest) {
 
             }
-        }).progressCallback(new HttpRequest.ProgressListener() {
+        }).progressListener(new HttpRequest.ProgressListener() {
             @Override
             public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength) {
                 getHintView().setProgress((int) totalLength, (int) completedLength);

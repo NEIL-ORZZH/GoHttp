@@ -14,6 +14,7 @@ import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.message.BufferedHeader;
 import org.apache.http.protocol.HTTP;
@@ -29,10 +30,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -42,26 +45,24 @@ public class DefaultCacheManager implements CacheManager{
     private String cacheDirectory;	// 缓存目录
 
     @Override
-    public void saveHttpResponseToCache(HttpRequest request, HttpResponse response) throws IOException {
-        HttpEntity httpEntity = response.getEntity();
+    public void saveHttpResponseToCache(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+        HttpEntity httpEntity = httpResponse.getEntity();
         if(httpEntity == null){
-            if(request.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, createLog(request, "网络 - 缓存失败，原因：Http实体是null"));
-            return;
+            throw new IOException("Http实体是null");
         }
 
         // 保存状态行
-        String cacheId = request.getCacheConfig().getId();
-        File statusLineCacheFile = getCacheFile(request.getGoHttp(), cacheId + ".status_line");
+        String cacheId = httpRequest.getCacheConfig().getId();
+        File statusLineCacheFile = getCacheFile(httpRequest.getGoHttp(), cacheId + ".status_line");
         try {
             if(createFile(statusLineCacheFile) == null ){
-                if(request.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, createLog(request, "网络 - 创建缓存文件失败"));
-                return;
+                throw new IOException("创建缓存文件失败: "+statusLineCacheFile.getPath());
             }
         } catch (IOException e) {
             e.printStackTrace();
             return;
         }
-        StatusLineCache statusLineCache = new StatusLineCache(response.getStatusLine());
+        StatusLineCache statusLineCache = new StatusLineCache(httpResponse.getStatusLine());
         try {
             writeString(statusLineCacheFile, new Gson().toJson(statusLineCache), false);
         } catch (IOException e) {
@@ -71,19 +72,18 @@ public class DefaultCacheManager implements CacheManager{
         }
 
         // 保存响应头
-        File responseHeadersCacheFile = getCacheFile(request.getGoHttp(), cacheId + ".headers");
+        File responseHeadersCacheFile = getCacheFile(httpRequest.getGoHttp(), cacheId + ".headers");
         try {
             if(createFile(responseHeadersCacheFile) == null){
                 statusLineCacheFile.delete();
-                if(request.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, createLog(request, "网络 - 创建缓存文件失败"));
-                return;
+                throw new IOException("创建缓存文件失败: "+responseHeadersCacheFile.getPath());
             }
         } catch (IOException e) {
             e.printStackTrace();
             statusLineCacheFile.delete();
             return;
         }
-        Header[] headers = response.getAllHeaders();
+        Header[] headers = httpResponse.getAllHeaders();
         String[] headerStrings = new String[headers.length];
         for(int w = 0; w < headers.length; w++){
             Header header = headers[w];
@@ -103,13 +103,12 @@ public class DefaultCacheManager implements CacheManager{
         }
 
         // 保存响应体
-        File responseEntityCacheFile = getCacheFile(request.getGoHttp(), cacheId + ".entity");
+        File responseEntityCacheFile = getCacheFile(httpRequest.getGoHttp(), cacheId + ".entity");
         try {
             if(createFile(responseEntityCacheFile) == null){
                 statusLineCacheFile.delete();
                 responseHeadersCacheFile.delete();
-                if(request.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, createLog(request, "网络 - 创建缓存文件失败"));
-                return;
+                throw new IOException("创建缓存文件失败: "+responseEntityCacheFile.getPath());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -137,9 +136,9 @@ public class DefaultCacheManager implements CacheManager{
             responseEntityCacheFile.delete();
 
             if(responseEntityCacheFile.delete() || responseHeadersCacheFile.delete() || statusLineCacheFile.delete()){
-                if(request.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, createLog(request, "网络 - 缓存响应失败，缓存文件已刪除"));
+                if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, createLog(httpRequest, "Cache : 缓存响应失败，缓存文件已刪除"));
             }else{
-                if(request.getGoHttp().isDebugMode()) Log.e(GoHttp.LOG_TAG, createLog(request, "网络 - 缓存响应失败，缓存文件刪除失敗"));
+                if(httpRequest.getGoHttp().isDebugMode()) Log.e(GoHttp.LOG_TAG, createLog(httpRequest, "Cache : 缓存响应失败，缓存文件刪除失敗"));
             }
 
             throw exception;
@@ -147,46 +146,45 @@ public class DefaultCacheManager implements CacheManager{
 
         // 将响应实体替换为本地文件
         Header contentTypeHeader = httpEntity.getContentType();
-        response.setEntity(new FileEntity(responseEntityCacheFile,contentTypeHeader != null?contentTypeHeader.getValue():null));
-        if(request.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, createLog(request, "网络 - 响应已缓存"));
+        httpResponse.setEntity(new FileEntity(responseEntityCacheFile,contentTypeHeader != null?contentTypeHeader.getValue():null));
     }
 
     @Override
-    public boolean isHasAvailableCache(HttpRequest request) {
+    public boolean isHasAvailableCache(HttpRequest httpRequest) {
         // 如果不需要缓存直接返回false
-        if(request.getCacheConfig() == null){
+        if(httpRequest.getCacheConfig() == null){
             return false;
         }
 
         // 如果缓存ID为null说明不需要缓存直接返回false
-        String cacheId = request.getCacheConfig().getId();
+        String cacheId = httpRequest.getCacheConfig().getId();
         if(!(cacheId != null && !"".equals(cacheId))){
             return false;
         }
 
         // 创建缓存文件并根据缓存文件是否存在初步判断缓存是否可用
-        File statusLineCacheFile = getCacheFile(request.getGoHttp(), cacheId + ".status_line");
-        File responseHeadersCacheFile = getCacheFile(request.getGoHttp(), cacheId + ".headers");
-        File responseEntityCacheFile = getCacheFile(request.getGoHttp(), cacheId + ".entity");
+        File statusLineCacheFile = getCacheFile(httpRequest.getGoHttp(), cacheId + ".status_line");
+        File responseHeadersCacheFile = getCacheFile(httpRequest.getGoHttp(), cacheId + ".headers");
+        File responseEntityCacheFile = getCacheFile(httpRequest.getGoHttp(), cacheId + ".entity");
 
         // 如果缓存文件不可用就尝试删除所有的缓存文件并直接返回false
         if(!(statusLineCacheFile.exists() && responseHeadersCacheFile.exists() && responseEntityCacheFile.exists())){
-            if(!statusLineCacheFile.delete() && request.getGoHttp().isDebugMode()){
-                Log.w(GoHttp.LOG_TAG, createLog(request, "缓存文件删除失败：" + statusLineCacheFile.getPath()));
+            if(!statusLineCacheFile.delete() && httpRequest.getGoHttp().isDebugMode()){
+                Log.w(GoHttp.LOG_TAG, createLog(httpRequest, "Cache : 缓存文件删除失败：" + statusLineCacheFile.getPath()));
             }
-            if(!responseHeadersCacheFile.delete() && request.getGoHttp().isDebugMode()){
-                Log.w(GoHttp.LOG_TAG, createLog(request, "缓存文件删除失败："+responseHeadersCacheFile.getPath()));
+            if(!responseHeadersCacheFile.delete() && httpRequest.getGoHttp().isDebugMode()){
+                Log.w(GoHttp.LOG_TAG, createLog(httpRequest, "Cache : 缓存文件删除失败："+responseHeadersCacheFile.getPath()));
             }
-            if(!responseEntityCacheFile.delete() && request.getGoHttp().isDebugMode()){
-                Log.w(GoHttp.LOG_TAG, createLog(request, "缓存文件删除失败："+responseEntityCacheFile.getPath()));
+            if(!responseEntityCacheFile.delete() && httpRequest.getGoHttp().isDebugMode()){
+                Log.w(GoHttp.LOG_TAG, createLog(httpRequest, "Cache : 缓存文件删除失败："+responseEntityCacheFile.getPath()));
             }
-            if(request.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, createLog(request, "缓存 - 文件不存在"));
+            if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, createLog(httpRequest, "Cache : 缓存文件不存在"));
             return false;
         }
 
         // 如果有效期小于等于0，就无需验证了，直接返回true
-        if(request.getCacheConfig().getPeriodOfValidity() <= 0){
-            if(request.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, createLog(request, "缓存 - 永久有效"));
+        if(httpRequest.getCacheConfig().getPeriodOfValidity() <= 0){
+            if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, createLog(httpRequest, "Cache : 缓存永久有效"));
             return true;
         }
 
@@ -194,40 +192,36 @@ public class DefaultCacheManager implements CacheManager{
         long cacheTime = responseEntityCacheFile.lastModified();	// 缓存时间
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(new Date(cacheTime));
-        calendar.add(Calendar.MILLISECOND, request.getCacheConfig().getPeriodOfValidity());
+        calendar.add(Calendar.MILLISECOND, httpRequest.getCacheConfig().getPeriodOfValidity());
         long outOfDateTime = calendar.getTimeInMillis();	// 过期时间
         long currentTime = System.currentTimeMillis();	//当前时间
         boolean isAvailable = outOfDateTime > currentTime;
-        if(request.getGoHttp().isDebugMode()){
+        if(httpRequest.getGoHttp().isDebugMode()){
             if(isAvailable){
-                Log.d(GoHttp.LOG_TAG, createLog(request, "缓存 - 有效"));
+                Log.d(GoHttp.LOG_TAG, createLog(httpRequest, "Cache : 缓存有效"));
             }else{
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.getDefault());
                 String lastModifiedTimeString = simpleDateFormat.format(new Date(cacheTime));
                 String currentTimeString = simpleDateFormat.format(new Date());
                 String outOfDateTimeString = simpleDateFormat.format(new Date(outOfDateTime));
-                Log.w(GoHttp.LOG_TAG,
-                        request.getName()
-                                + "缓存 - 已過期"
+                Log.w(GoHttp.LOG_TAG, createLog(httpRequest,
+                        "Cache : 缓存已過期"
                                 + "，" + "缓存时间：" + lastModifiedTimeString
                                 + "；" + "过期时间：" + outOfDateTimeString
                                 + "；" + "当前时间：" + currentTimeString
-                                + "；" + "缓存有效期：" + request.getCacheConfig().getPeriodOfValidity() + "毫秒"
-                                + "（" + request.getUrl() + "）");
+                                + "；" + "缓存有效期：" + httpRequest.getCacheConfig().getPeriodOfValidity() + "毫秒"));
             }
         }
         return isAvailable;
     }
 
     @Override
-    public HttpResponse readHttpResponseFromCache(HttpRequest request) {
-        if(request.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, createLog(request, "本地"));
-
+    public HttpResponse readHttpResponseFromCache(HttpRequest httpRequest) {
         // 创建缓存文件
-        String cacheId = request.getCacheConfig().getId();
-        File statusLineCacheFile = getCacheFile(request.getGoHttp(), cacheId + ".status_line");
-        File responseHeadersCacheFile = getCacheFile(request.getGoHttp(), cacheId + ".headers");
-        File responseEntityCacheFile = getCacheFile(request.getGoHttp(), cacheId + ".entity");
+        String cacheId = httpRequest.getCacheConfig().getId();
+        File statusLineCacheFile = getCacheFile(httpRequest.getGoHttp(), cacheId + ".status_line");
+        File responseHeadersCacheFile = getCacheFile(httpRequest.getGoHttp(), cacheId + ".headers");
+        File responseEntityCacheFile = getCacheFile(httpRequest.getGoHttp(), cacheId + ".entity");
 
         // 读取状态行并初始化响应
         StatusLineCache statusLineCache;
@@ -271,7 +265,7 @@ public class DefaultCacheManager implements CacheManager{
     }
 
     private String createLog(HttpRequest request, String type){
-        return request.getName()+" "+type+"（"+request.getUrl()+"）";
+        return request.getName()+"; "+type+"; "+request.getUrl();
     }
 
     /**
@@ -422,5 +416,55 @@ public class DefaultCacheManager implements CacheManager{
     @Override
     public void setCacheDirectory(String cacheDirectory) {
         this.cacheDirectory = cacheDirectory;
+    }
+
+    @Override
+    public String generateCacheId(HttpRequest httpRequest) {
+        if(httpRequest.getCacheConfig() == null){
+            return null;
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(httpRequest.getUrl());
+        if(httpRequest.getParams() != null){
+            List<String> cacheIgnoreParamNames = httpRequest.getCacheIgnoreParamNames();
+            for(BasicNameValuePair basicNameValuePair : httpRequest.getParams().getParamsList()){
+                if(cacheIgnoreParamNames == null || !cacheIgnoreParamNames.contains(basicNameValuePair.getName())){
+                    stringBuilder.append(basicNameValuePair.getName());
+                    stringBuilder.append(basicNameValuePair.getValue());
+                }
+            }
+        }
+        return MD5(stringBuilder.toString());
+    }
+
+    /**
+     * 将给定的字符串MD5加密
+     * @param string 给定的字符串
+     * @return MD5加密后生成的字符串
+     */
+    public static String MD5(String string) {
+        String result = null;
+        try {
+            char[] charArray = string.toCharArray();
+            byte[] byteArray = new byte[charArray.length];
+            for (int i = 0; i < charArray.length; i++){
+                byteArray[i] = (byte) charArray[i];
+            }
+
+            StringBuilder hexValue = new StringBuilder();
+            for (byte by : MessageDigest.getInstance("MD5").digest(byteArray)) {
+                int val = ((int) by) & 0xff;
+                if (val < 16){
+                    hexValue.append("0");
+                }
+                hexValue.append(Integer.toHexString(val));
+            }
+
+            result = hexValue.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

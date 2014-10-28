@@ -45,11 +45,11 @@ public class CacheConfig {
 
     /**
      * 获取ID
-     * @return
+     * @return ID
      */
     public String getId() {
         if(id == null){
-            id = httpRequest.generateCacheId();
+            id = httpRequest.getGoHttp().getCacheManager().generateCacheId(httpRequest);
         }
 		return id;
 	}

@@ -31,20 +31,22 @@ public class ContentType extends BasicHeader{
 
 	public ContentType(String value) {
         super(NAME, value);
-        HeaderElement[] elements = getElements();
-        if(elements == null || elements.length <= 0){
-            new IllegalArgumentException("value is not valid : "+value).printStackTrace();
+
+        String[] element = value.split(";");
+        if(element.length > 0){
+            mimeType = element[0];
+        }else{
+            new IllegalArgumentException("value is not valid ("+value+")").printStackTrace();
             return;
         }
-
-        mimeType = elements[0].toString();
-
-        if(elements.length < 2){
-            new IllegalArgumentException("No second elements"+value).printStackTrace();
-            return;
+        if(element.length > 1){
+            element = element[1].split("=");
+            if(element.length > 1){
+                charset = element[1];
+            }
+        }else{
+            new IllegalArgumentException("No second elements ("+value+")").printStackTrace();
         }
-
-        charset = elements[1].getValue();
     }
 
     public ContentType(String mimeType, String charset){

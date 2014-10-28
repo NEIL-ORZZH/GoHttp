@@ -26,28 +26,35 @@ import java.io.IOException;
 public interface CacheManager {
     /**
      * 保存HTTP响应到本地缓存
-     * @param request 请求
-     * @param response 响应
+     * @param httpRequest 请求
+     * @param httpResponse 响应
      */
-    public void saveHttpResponseToCache(HttpRequest request, HttpResponse response)  throws IOException;
+    public void saveHttpResponseToCache(HttpRequest httpRequest, HttpResponse httpResponse)  throws IOException;
 
     /**
      * 根据请求判断其是否有可用缓存
-     * @param request 请求
+     * @param httpRequest 请求
      * @return 是否有可用缓存
      */
-    public boolean isHasAvailableCache(HttpRequest request);
+    public boolean isHasAvailableCache(HttpRequest httpRequest);
 
     /**
      * 从缓存中读取HTTP响应
-     * @param request 请求
+     * @param httpRequest 请求
      * @return HTTP响应
      */
-    public HttpResponse readHttpResponseFromCache(HttpRequest request);
+    public HttpResponse readHttpResponseFromCache(HttpRequest httpRequest);
 
     /**
      * 设置缓存目录
      * @param cacheDirectory 缓存目录
      */
     public void setCacheDirectory(String cacheDirectory);
+
+    /**
+     * 根据HttpRequest生成缓存ID
+     * @param httpRequest 请求
+     * @return 缓存ID
+     */
+    public String generateCacheId(HttpRequest httpRequest);
 }

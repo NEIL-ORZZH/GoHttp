@@ -37,9 +37,10 @@ public class HttpRequestHandler implements Runnable{
         if(httpRequest.isCanceled()){
             httpRequest.finish();
             new CancelRunnable(httpRequest).execute();
-            Log.w(GoHttp.LOG_TAG, "Canceled : 刚刚开始"+httpRequest.getUrl());
+            if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 刚刚开始"+"; "+httpRequest.getUrl());
             return;
         }
+        if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Started : 刚刚开始"+"; "+httpRequest.getUrl());
 
         boolean isCache = httpRequest.getCacheConfig() != null;
 		boolean isRefreshCache = isCache && httpRequest.getCacheConfig().isRefreshCache();
@@ -51,17 +52,17 @@ public class HttpRequestHandler implements Runnable{
             if(httpRequest.isCanceled()){
                 httpRequest.finish();
                 new CancelRunnable(httpRequest).execute();
-                Log.w(GoHttp.LOG_TAG, "Canceled : 判断完缓存可用"+httpRequest.getUrl());
+                if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 判断完缓存可用"+"; "+httpRequest.getUrl());
                 return;
             }
+            if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Cache : 缓存可用"+"; "+httpRequest.getUrl());
 
 			// 从本地缓存中读取Http响应
 			httpResponse = httpRequest.getGoHttp().getCacheManager().readHttpResponseFromCache(httpRequest);
-
             if(httpRequest.isCanceled()){
                 httpRequest.finish();
                 new CancelRunnable(httpRequest).execute();
-                Log.w(GoHttp.LOG_TAG, "Canceled : 读取完本地缓存"+httpRequest.getUrl());
+                if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 读取完缓存"+"; "+httpRequest.getUrl());
                 return;
             }
 
@@ -74,7 +75,7 @@ public class HttpRequestHandler implements Runnable{
                     if(httpRequest.isCanceled()){
                         httpRequest.finish();
                         new CancelRunnable(httpRequest).execute();
-                        Log.w(GoHttp.LOG_TAG, "Canceled : 处理完本地缓存"+httpRequest.getUrl());
+                        if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 处理完缓存"+"; "+httpRequest.getUrl());
                         return;
                     }
 
@@ -86,25 +87,29 @@ public class HttpRequestHandler implements Runnable{
                     if(responseObject instanceof HttpRequest.Failure){
                         new FailedRunnable(httpRequest, httpResponse, (HttpRequest.Failure) responseObject, true, isContinueCallback).execute();
                     }else{
-                        if(httpRequest.getResponseHandleAfter() != null){
+                        if(httpRequest.getResponseHandleCompletedAfterListener() != null){
                             //noinspection unchecked
-                            httpRequest.getResponseHandleAfter().onResponseHandleAfter(httpRequest, httpResponse, responseObject, true, isContinueCallback);
+                            httpRequest.getResponseHandleCompletedAfterListener().onResponseHandleAfter(httpRequest, httpResponse, responseObject, true, isContinueCallback);
                         }
                         new CompletedRunnable(httpRequest, httpResponse, responseObject, true, isContinueCallback).execute();
                     }
                     // 如果不刷新缓存就意味着请求已经结束了
                     if(!isRefreshCache){
+                        if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Completed : 读取完缓存并且不需要刷新缓存"+"; "+httpRequest.getUrl());
                         return;
                     }
+                    if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Cache : 已读取并处理缓存"+"; "+httpRequest.getUrl());
 				} catch (Throwable e) {
 					e.printStackTrace();
                     if(httpRequest.isCanceled()){
                         httpRequest.finish();
                         new CancelRunnable(httpRequest).execute();
+                        if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 处理缓存的Http响应时发生异常"+"; "+httpRequest.getUrl());
                         return;
                     }
+                    if(httpRequest.getGoHttp().isDebugMode()) Log.e(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Failed : 处理缓存的Http响应时发生异常"+"; "+httpRequest.getUrl());
 
-                    new FailedRunnable(httpRequest, httpResponse, new HttpRequest.Failure.Builder().exception(e).build(), true, isContinueCallback).execute();
+                    new FailedRunnable(httpRequest, httpResponse, new HttpRequest.Failure(e), true, isContinueCallback).execute();
 				}
 			}
 		}
@@ -120,18 +125,23 @@ public class HttpRequestHandler implements Runnable{
                 if(isContinueCallback){
                     new CancelRunnable(httpRequest).execute();
                 }
+                if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 从网络读取Http响应时发生异常"+"; "+httpRequest.getUrl());
                 return;
             }
+            if(httpRequest.getGoHttp().isDebugMode()) Log.e(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Failed : 从网络读取Http响应时发生异常"+"; "+httpRequest.getUrl());
+
             if(isContinueCallback){
-                new FailedRunnable(httpRequest, httpResponse, new HttpRequest.Failure.Builder().exception(e).build(), false, false).execute();
+                new FailedRunnable(httpRequest, httpResponse, new HttpRequest.Failure(e), false, false).execute();
             }
             return;
         }
         if(httpRequest.isCanceled()){
             httpRequest.finish();
             new CancelRunnable(httpRequest).execute();
+            if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 从网络读取完Http响应"+"; "+httpRequest.getUrl());
             return;
         }
+        if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Net : 已从网络读取Http取响应"+"; "+httpRequest.getUrl());
 
         // 缓存Http响应
         if(isCache && httpRequest.getResponseHandler().canCache(httpResponse)){
@@ -146,23 +156,28 @@ public class HttpRequestHandler implements Runnable{
                     if(isContinueCallback){
                         new CancelRunnable(httpRequest).execute();
                     }
+                    if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 缓存Http响应时发生异常"+"; "+httpRequest.getUrl());
                     return;
                 }
+                if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Failed : 缓存Http响应时发生异常"+"; "+httpRequest.getUrl());
                 if(isContinueCallback){
-                    new FailedRunnable(httpRequest, httpResponse, new HttpRequest.Failure.Builder().exception(e).build(), false, false).execute();
+                    new FailedRunnable(httpRequest, httpResponse, new HttpRequest.Failure(e), false, false).execute();
                 }
                 return;
             }
-        }
-        if(httpRequest.isCanceled()){
-            httpRequest.finish();
-            new CancelRunnable(httpRequest).execute();
-            return;
+            if(httpRequest.isCanceled()){
+                httpRequest.finish();
+                new CancelRunnable(httpRequest).execute();
+                if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 缓存完Http响应"+"; "+httpRequest.getUrl());
+                return;
+            }
+            if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Cache : 已缓存Http取响应"+"; "+httpRequest.getUrl());
         }
 
         // 不再回调了就直接结束
         if(!isContinueCallback){
             httpRequest.finish();
+            if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Completed : 不需要继续回调"+"; "+httpRequest.getUrl());
             return;
         }
 
@@ -178,28 +193,34 @@ public class HttpRequestHandler implements Runnable{
 
             if(httpRequest.isCanceled()){
                 new CancelRunnable(httpRequest).execute();
+                if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 处理从网络读取的Http响应时发生异常"+"; "+httpRequest.getUrl());
                 return;
             }
+            if(httpRequest.getGoHttp().isDebugMode()) Log.e(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Failed : 处理从网络读取的Http响应时发生异常"+"; "+httpRequest.getUrl());
 
-            new FailedRunnable(httpRequest, httpResponse, new HttpRequest.Failure.Builder().exception(e).build(), false, false).execute();
+            new FailedRunnable(httpRequest, httpResponse, new HttpRequest.Failure(e), false, false).execute();
             return;
         }
-
         if(httpRequest.isCanceled()){
             httpRequest.finish();
             new CancelRunnable(httpRequest).execute();
+            if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 处理完Http响应"+"; "+httpRequest.getUrl());
             return;
         }
+        if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Net : 已处理完Http响应"+"; "+httpRequest.getUrl());
 
         httpRequest.finish();
         if(responseObject instanceof HttpRequest.Failure){
-            new FailedRunnable(httpRequest, httpResponse, (HttpRequest.Failure) responseObject, false, false).execute();
+            HttpRequest.Failure failure = (HttpRequest.Failure) responseObject;
+            new FailedRunnable(httpRequest, httpResponse, failure, false, false).execute();
+            if(httpRequest.getGoHttp().isDebugMode()) Log.e(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Failed : "+failure.toString()+"; "+httpRequest.getUrl());
         }else{
-            if(httpRequest.getResponseHandleAfter() != null){
+            if(httpRequest.getResponseHandleCompletedAfterListener() != null){
                 //noinspection unchecked
-                httpRequest.getResponseHandleAfter().onResponseHandleAfter(httpRequest, httpResponse, responseObject, false, false);
+                httpRequest.getResponseHandleCompletedAfterListener().onResponseHandleAfter(httpRequest, httpResponse, responseObject, false, false);
             }
             new CompletedRunnable(httpRequest, httpResponse, responseObject, false, false).execute();
+            if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Completed : 走到了最后"+"; "+httpRequest.getUrl());
         }
     }
 
@@ -284,7 +305,7 @@ public class HttpRequestHandler implements Runnable{
 
         @Override
         public void run() {
-            httpRequest.getProgressCallback().onUpdateProgress(httpRequest, totalLength, completedLength);
+            httpRequest.getProgressListener().onUpdateProgress(httpRequest, totalLength, completedLength);
         }
 
         public void execute(){

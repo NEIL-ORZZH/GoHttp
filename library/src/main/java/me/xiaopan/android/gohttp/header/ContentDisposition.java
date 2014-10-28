@@ -28,20 +28,22 @@ public class ContentDisposition extends BasicHeader{
 	
 	public ContentDisposition(String value) {
         super(NAME, value);
-        HeaderElement[] elements = getElements();
-        if(elements == null || elements.length <= 0){
-            new IllegalArgumentException("value is not valid : "+value).printStackTrace();
+
+        String[] element = value.split(";");
+        if(element.length > 0){
+            disposition = element[0];
+        }else{
+            new IllegalArgumentException("value is not valid ("+value+")").printStackTrace();
             return;
         }
-
-        disposition = elements[0].toString();
-
-        if(elements.length < 2){
-            new IllegalArgumentException("No second elements"+value).printStackTrace();
-            return;
+        if(element.length > 1){
+            element = element[1].split("=");
+            if(element.length > 1){
+                fileName = element[1];
+            }
+        }else{
+            new IllegalArgumentException("No second elements ("+value+")").printStackTrace();
         }
-
-        fileName = elements[1].getValue();
     }
 
     public ContentDisposition(String disposition, String fileName){
@@ -56,5 +58,13 @@ public class ContentDisposition extends BasicHeader{
             return null;
         }
         return new ContentDisposition(firstHeader.getValue());
+    }
+
+    public String getDisposition() {
+        return disposition;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 }

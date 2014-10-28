@@ -176,8 +176,6 @@ public class HintView extends LinearLayout {
 	 * 显示提示
 	 * @param iconId 图标ID，如果不想显示图标的话，此参数传-1即可
 	 * @param hintText 提示信息
-	 * @param button1Name 按钮的名称
-	 * @param button1ClickListener 按钮的按下事件
 	 */
 	public void hint(int iconId, String hintText){
 		hint(iconId, hintText, null, null, false);
@@ -223,8 +221,8 @@ public class HintView extends LinearLayout {
 	
 	/**
 	 * 失败
-	 * @param failure
-	 * @param reloadButtonClickListener
+	 * @param failure 失败了
+	 * @param reloadButtonClickListener 重新加载按钮点击监听器
 	 */
 	public void failure(Failure failure, View.OnClickListener reloadButtonClickListener){
 		if(failure.isException()){

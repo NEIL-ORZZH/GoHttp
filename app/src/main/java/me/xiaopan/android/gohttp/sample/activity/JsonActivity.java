@@ -93,7 +93,7 @@ public class JsonActivity extends MyActivity {
             public void onCanceled(HttpRequest httpRequest) {
 
             }
-        }).progressCallback(new HttpRequest.ProgressListener() {
+        }).progressListener(new HttpRequest.ProgressListener() {
             @Override
             public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength) {
                 Log.e("进度", completedLength + " / " + totalLength);

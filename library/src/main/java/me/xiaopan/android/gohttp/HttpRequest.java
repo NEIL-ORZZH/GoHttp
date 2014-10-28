@@ -21,12 +21,10 @@ import android.util.Log;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.message.BasicNameValuePair;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,11 +49,11 @@ public class HttpRequest{
     private HttpEntity httpEntity;  // Http请求体
     private CacheConfig cacheConfig;    // 响应缓存配置
     private List<Header> headers;   // 请求头信息
-    private List<String> cacheIgnoreParams;	// 计算缓存ID时候忽略的参数集
+    private List<String> cacheIgnoreParamNames;	// 计算缓存ID时候忽略的参数名称集
     private RequestParams params;   // 请求参数
-    private ProgressListener progressCallback;
+    private ProgressListener progressListener;
     private HttpResponseHandler responseHandler;    // 响应处理器
-    private ResponseHandleAfter responseHandleAfter;
+    private ResponseHandleCompletedAfterListener responseHandleCompletedAfterListener;
 
     private boolean canceled;   // 是否已经取消
     private boolean finished;   // 是否已经完成
@@ -69,22 +67,26 @@ public class HttpRequest{
         this.method = helper.method;
         this.headers = helper.headers;
         this.listener = helper.listener;
-        this.httpEntity = helper.httpEntity;
+        this.httpEntity = helper.entity;
         this.cacheConfig = helper.cacheConfig;
         this.responseHandler = helper.responseHandler;
-        this.progressCallback = helper.progressCallback;
-        this.cacheIgnoreParams = helper.cacheIgnoreParams;
+        this.progressListener = helper.progressListener;
+        this.cacheIgnoreParamNames = helper.cacheIgnoreParamNames;
         this.progressCallbackNumber = helper.progressCallbackNumber;
-        this.responseHandleAfter = helper.responseHandleAfter;
+        this.responseHandleCompletedAfterListener = helper.responseHandleCompletedAfterListener;
 
         if(name == null){
-            name = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()) + " "+method.name();
+            name = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.getDefault()).format(new Date()) + " "+method.name();
         }
         if(cacheConfig != null){
             cacheConfig.attachHttpRequest(this);
         }
     }
 
+    /**
+     * 获取GoHttp
+     * @return GoHttp
+     */
     public GoHttp getGoHttp() {
         return goHttp;
     }
@@ -167,20 +169,43 @@ public class HttpRequest{
         return canceled && stopReadData;
     }
 
+    /**
+     * 获取计算缓存ID是忽略的参数的名称集合
+     */
+    public List<String> getCacheIgnoreParamNames() {
+        return cacheIgnoreParamNames;
+    }
+
+    /**
+     * 获取过程监听器
+     * @return 过程监听器
+     */
     public Listener getListener() {
         return listener;
     }
 
-    public ProgressListener getProgressCallback() {
-        return progressCallback;
+    /**
+     * 获取进度回调监听器
+     * @return 进度回调监听器
+     */
+    public ProgressListener getProgressListener() {
+        return progressListener;
     }
 
+    /**
+     * 获取请求方式
+     * @return 请求方式
+     */
     public MethodType getMethod() {
         return method;
     }
 
-    public ResponseHandleAfter getResponseHandleAfter() {
-        return responseHandleAfter;
+    /**
+     * 获取ResponseHandleCompletedAfterListener
+     * @return ResponseHandleCompletedAfterListener
+     */
+    public ResponseHandleCompletedAfterListener getResponseHandleCompletedAfterListener() {
+        return responseHandleCompletedAfterListener;
     }
 
     /**
@@ -191,7 +216,7 @@ public class HttpRequest{
     }
 
     /**
-     * 完成
+     * 设置请求已经完成了
      */
     public void finish() {
         this.finished = true;
@@ -206,27 +231,9 @@ public class HttpRequest{
     }
 
     /**
-     * 生成缓存ID
-     * @return 缓存ID
+     * 获取一个用于执行请求的任务
+     * @return 一个用于执行请求的任务
      */
-    public String generateCacheId(){
-        if(cacheConfig == null){
-            return null;
-        }
-
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(url);
-        if(params != null){
-            for(BasicNameValuePair basicNameValuePair : params.getParamsList()){
-                if(cacheIgnoreParams == null || !cacheIgnoreParams.contains(basicNameValuePair.getName())){
-                    stringBuilder.append(basicNameValuePair.getName());
-                    stringBuilder.append(basicNameValuePair.getValue());
-                }
-            }
-        }
-        return MD5(stringBuilder.toString());
-    }
-
     public Runnable getExecuteRunnable(){
         return new HttpRequestHandler(this);
     }
@@ -241,14 +248,14 @@ public class HttpRequest{
         private GoHttp goHttp;
         private Listener listener;
         private MethodType method;  // 请求方式
-        private HttpEntity httpEntity;  // Http请求体
+        private HttpEntity entity;  // Http请求体
         private CacheConfig cacheConfig;    // 响应缓存配置
         private List<Header> headers;   // 请求头信息
-        private List<String> cacheIgnoreParams;	// 计算缓存ID时候忽略的参数集
+        private List<String> cacheIgnoreParamNames;	// 计算缓存ID时候忽略的参数名称集
         private RequestParams params;   // 请求参数
-        private ProgressListener progressCallback;
-        private HttpResponseHandler responseHandler;
-        private ResponseHandleAfter responseHandleAfter;
+        private ProgressListener progressListener;  // 进度监听器
+        private HttpResponseHandler responseHandler;    // 响应处理器
+        private ResponseHandleCompletedAfterListener responseHandleCompletedAfterListener;  // 响应处理完成之后
 
         public Helper(GoHttp goHttp, String url, HttpResponseHandler responseHandler, Listener listener){
             if(goHttp == null){
@@ -449,8 +456,8 @@ public class HttpRequest{
          * 设置请求实体
          * @param httpEntity 请求实体
          */
-        public Helper httpEntity(HttpEntity httpEntity) {
-            this.httpEntity = httpEntity;
+        public Helper entity(HttpEntity httpEntity) {
+            this.entity = httpEntity;
             return this;
         }
 
@@ -459,19 +466,19 @@ public class HttpRequest{
          * @param cacheIgnoreParamName 计算缓存ID时候忽略的参数的名称
          */
         public Helper addCacheIgnoreParamName(String cacheIgnoreParamName) {
-            if(cacheIgnoreParams == null){
-                cacheIgnoreParams = new ArrayList<String>();
+            if(cacheIgnoreParamNames == null){
+                cacheIgnoreParamNames = new ArrayList<String>();
             }
-            cacheIgnoreParams.add(cacheIgnoreParamName);
+            cacheIgnoreParamNames.add(cacheIgnoreParamName);
             return this;
         }
 
         /**
          * 设置进度监听器
-         * @param progressCallback 进度监听器
+         * @param progressListener 进度监听器
          */
-        public Helper progressCallback(ProgressListener progressCallback) {
-            this.progressCallback = progressCallback;
+        public Helper progressListener(ProgressListener progressListener) {
+            this.progressListener = progressListener;
             return this;
         }
 
@@ -485,11 +492,10 @@ public class HttpRequest{
         }
 
         /**
-         * Response处理完成之后，会在异步线程中执行ResponseHandleAfter
-         * @param responseHandleAfter
+         * Response处理完成之后，会在异步线程中执行ResponseHandleCompletedAfterListener，目的是为了方便在异步线程中进一步对结果进行处理
          */
-        public Helper responseHandleAfter(ResponseHandleAfter responseHandleAfter) {
-            this.responseHandleAfter = responseHandleAfter;
+        public Helper responseHandleCompletedAfterListener(ResponseHandleCompletedAfterListener responseHandleCompletedAfterListener) {
+            this.responseHandleCompletedAfterListener = responseHandleCompletedAfterListener;
             return this;
         }
 
@@ -535,7 +541,7 @@ public class HttpRequest{
 
             // GET、POST、PUT请求方式还要解析缓存
             if(this.method == MethodType.GET || this.method == MethodType.POST || this.method == MethodType.PUT){
-                this.cacheIgnoreParams = RequestParser.parseCacheIgnoreParams(goHttp.getContext(), requestClass);
+                this.cacheIgnoreParamNames = RequestParser.parseCacheIgnoreParams(goHttp.getContext(), requestClass);
                 this.cacheConfig = RequestParser.parseResponseCacheAnnotation(goHttp.getContext(), requestClass);
             }
         }
@@ -579,6 +585,9 @@ public class HttpRequest{
         public void onCanceled(HttpRequest httpRequest);
     }
 
+    /**
+     * 进度监听器
+     */
     public interface ProgressListener{
         /**
          * 更新进度
@@ -589,86 +598,75 @@ public class HttpRequest{
         public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength);
     }
 
-    public interface ResponseHandleAfter<T>{
+    /**
+     * Response处理完成之后会在异步线程中回调ResponseHandleCompletedAfterListener，目的是为了方便在异步线程中进一步对结果进行处理
+     * @param <T>
+     */
+    public interface ResponseHandleCompletedAfterListener<T>{
         public void onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, T responseContent, boolean isCache, boolean isContinueCallback);
     }
 
+    /**
+     * 请求失败，包含失败原因等相关信息
+     */
     public static class Failure{
         private int code;
         private String message;
         private Throwable exception;
 
-        private Failure(Builder builder) {
-            this.code = builder.code;
-            this.message = builder.message;
-            this.exception = builder.exception;
+        /**
+         * 创建一个由异常引起的失败对象
+         * @param exception 引起失败的异常
+         */
+        public Failure(Throwable exception) {
+            this.exception = exception;
         }
 
+        /**
+         * 创建一个正常失败对象
+         * @param code 类型码
+         * @param message 说明
+         */
+        public Failure(int code, String message) {
+            this.code = code;
+            this.message = message;
+        }
+
+        /**
+         * 获取类型码
+         * @return 类型码
+         */
         public int getCode() {
             return code;
         }
 
+        /**
+         * 获取说明
+         * @return 说明
+         */
         public String getMessage() {
             return message;
         }
 
+        /**
+         * 获取异常
+         * @return 异常
+         */
         public Throwable getException() {
             return exception;
         }
 
-        public static class Builder{
-            private int code;
-            private String message;
-            private Throwable exception;
-
-            public Builder exception(Throwable exception) {
-                this.exception = exception;
-                return this;
-            }
-
-            public Builder message(String message) {
-                this.message = message;
-                return this;
-            }
-
-            public Builder code(int code) {
-                this.code = code;
-                return this;
-            }
-
-            public Failure build(){
-                return new Failure(this);
-            }
+        /**
+         * 判断失败是否是因为异常导致的，判断条件就是exception是否不为null
+         * @return 失败是否是因为异常导致的
+         */
+        public boolean isException(){
+            return exception != null;
         }
-    }
 
-    /**
-     * 将给定的字符串MD5加密
-     * @param string 给定的字符串
-     * @return MD5加密后生成的字符串
-     */
-    public static String MD5(String string) {
-        String result = null;
-        try {
-            char[] charArray = string.toCharArray();
-            byte[] byteArray = new byte[charArray.length];
-            for (int i = 0; i < charArray.length; i++){
-                byteArray[i] = (byte) charArray[i];
-            }
-
-            StringBuilder hexValue = new StringBuilder();
-            for (byte by : MessageDigest.getInstance("MD5").digest(byteArray)) {
-                int val = ((int) by) & 0xff;
-                if (val < 16){
-                    hexValue.append("0");
-                }
-                hexValue.append(Integer.toHexString(val));
-            }
-
-            result = hexValue.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
+        @Override
+        public String toString() {
+            return isException()?exception.toString():code+" ( "+message+" ) ";
         }
-        return result;
     }
 }
