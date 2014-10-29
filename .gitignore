@@ -20,6 +20,7 @@ gen/
 
 # Idea files
 .idea/workspace.xml
+.idea/libraries
 #*.iml
 
 # Gradle files
