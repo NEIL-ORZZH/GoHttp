@@ -51,27 +51,20 @@ public class StringActivity extends MyActivity {
 	}
 	
 	private void load(){
-        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest("http://www.miui.com/forum.php", new StringHttpResponseHandler(), new HttpRequest.Listener<String>() {
+        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest("http://www.miui.com/forum.php", new StringHttpResponseHandler(), new HttpRequest.Listener<Object>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
-				getHintView().loading("MIUI首页");
+
             }
 
             @Override
-            public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, String responseContent, boolean isCache, boolean isContinueCallback) {
-				ContentType contentType = ContentType.fromHttpMessage(httpResponse);
-				webViewManager.getWebView().loadDataWithBaseURL(null, responseContent, contentType.getMimeType(), contentType.getCharset("UTF-8"), null);
-				getHintView().hidden();
+            public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, Object responseContent, boolean isCache, boolean isContinueCallback) {
+
             }
 
             @Override
             public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean isCache, boolean isContinueCallback) {
-				getHintView().failure(Failure.buildByException(getBaseContext(), failure.getException()), new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						load();
-					}
-				});
+
             }
 
             @Override

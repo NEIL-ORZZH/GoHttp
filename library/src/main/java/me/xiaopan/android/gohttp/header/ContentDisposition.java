@@ -17,7 +17,6 @@
 package me.xiaopan.android.gohttp.header;
 
 import org.apache.http.Header;
-import org.apache.http.HeaderElement;
 import org.apache.http.HttpMessage;
 import org.apache.http.message.BasicHeader;
 

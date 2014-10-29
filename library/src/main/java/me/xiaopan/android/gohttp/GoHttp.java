@@ -88,7 +88,7 @@ public class GoHttp {
      * @param listener 请求监听器
      * @return HttpRequest.Helper 你还可以继续设置一些参数，最后调用go()方法即可
      */
-    public HttpRequest.Helper newRequest(String url, HttpResponseHandler responseHandler, HttpRequest.Listener listener){
+    public HttpRequest.Helper newRequest(String url, HttpResponseHandler responseHandler, HttpRequest.Listener<?> listener){
         return new HttpRequest.Helper(this, url, responseHandler, listener);
     }
 
@@ -99,7 +99,7 @@ public class GoHttp {
      * @param listener 请求监听器
      * @return HttpRequest.Helper 你还可以继续设置一些参数，最后调用go()方法即可
      */
-    public HttpRequest.Helper newRequest(Request requestObject, HttpResponseHandler responseHandler, HttpRequest.Listener listener){
+    public HttpRequest.Helper newRequest(Request requestObject, HttpResponseHandler responseHandler, HttpRequest.Listener<?> listener){
         return new HttpRequest.Helper(this, requestObject, responseHandler, listener);
     }
 

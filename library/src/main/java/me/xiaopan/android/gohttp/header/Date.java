@@ -22,8 +22,7 @@ import org.apache.http.message.BasicHeader;
 
 public class Date extends BasicHeader{
 	public static final String NAME = "Date";
-	private String value;
-	
+
 	public Date(String value) {
 		super(NAME, value);
 	}
