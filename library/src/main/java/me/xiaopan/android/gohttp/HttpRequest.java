@@ -46,14 +46,14 @@ public class HttpRequest{
     private GoHttp goHttp;
     private MethodType method;  // 请求方式
     private HttpEntity httpEntity;  // Http请求体
-    private Listener<?> listener;
+    private Listener listener;
     private CacheConfig cacheConfig;    // 响应缓存配置
     private List<Header> headers;   // 请求头信息
     private List<String> cacheIgnoreParamNames;	// 计算缓存ID时候忽略的参数名称集
     private RequestParams params;   // 请求参数
     private ProgressListener progressListener;
     private HttpResponseHandler responseHandler;    // 响应处理器
-    private ResponseHandleCompletedAfterListener<?> responseHandleCompletedAfterListener;
+    private ResponseHandleCompletedAfterListener responseHandleCompletedAfterListener;
 
     private boolean canceled;   // 是否已经取消
     private boolean finished;   // 是否已经完成
@@ -180,7 +180,7 @@ public class HttpRequest{
      * 获取过程监听器
      * @return 过程监听器
      */
-    public Listener<?> getListener() {
+    public Listener getListener() {
         return listener;
     }
 
@@ -204,7 +204,7 @@ public class HttpRequest{
      * 获取ResponseHandleCompletedAfterListener
      * @return ResponseHandleCompletedAfterListener
      */
-    public ResponseHandleCompletedAfterListener<?> getResponseHandleCompletedAfterListener() {
+    public ResponseHandleCompletedAfterListener getResponseHandleCompletedAfterListener() {
         return responseHandleCompletedAfterListener;
     }
 
@@ -248,16 +248,16 @@ public class HttpRequest{
         private GoHttp goHttp;
         private MethodType method;  // 请求方式
         private HttpEntity entity;  // Http请求体
-        private Listener<?> listener;
+        private Listener listener;
         private CacheConfig cacheConfig;    // 响应缓存配置
         private List<Header> headers;   // 请求头信息
         private List<String> cacheIgnoreParamNames;	// 计算缓存ID时候忽略的参数名称集
         private RequestParams params;   // 请求参数
         private ProgressListener progressListener;  // 进度监听器
         private HttpResponseHandler responseHandler;    // 响应处理器
-        private ResponseHandleCompletedAfterListener<?> responseHandleCompletedAfterListener;  // 响应处理完成之后
+        private ResponseHandleCompletedAfterListener responseHandleCompletedAfterListener;  // 响应处理完成之后
 
-        public Helper(GoHttp goHttp, String url, HttpResponseHandler responseHandler, Listener<?> listener){
+        public Helper(GoHttp goHttp, String url, HttpResponseHandler responseHandler, Listener listener){
             if(goHttp == null){
                 throw new IllegalArgumentException("goHttp is null");
             }
@@ -278,7 +278,7 @@ public class HttpRequest{
             this.progressCallbackNumber = 100;
         }
 
-        public Helper(GoHttp goHttp, Request requestObject, HttpResponseHandler responseHandler, Listener<?> listener){
+        public Helper(GoHttp goHttp, Request requestObject, HttpResponseHandler responseHandler, Listener listener){
             if(goHttp == null){
                 throw new IllegalArgumentException("goHttp is null");
             }
@@ -494,7 +494,7 @@ public class HttpRequest{
         /**
          * Response处理完成之后，会在异步线程中执行ResponseHandleCompletedAfterListener，目的是为了方便在异步线程中进一步对结果进行处理
          */
-        public Helper responseHandleCompletedAfterListener(ResponseHandleCompletedAfterListener<?> responseHandleCompletedAfterListener) {
+        public Helper responseHandleCompletedAfterListener(ResponseHandleCompletedAfterListener responseHandleCompletedAfterListener) {
             this.responseHandleCompletedAfterListener = responseHandleCompletedAfterListener;
             return this;
         }
