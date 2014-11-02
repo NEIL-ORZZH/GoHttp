@@ -86,10 +86,10 @@ public class GoHttp {
      * @param url 请求地址
      * @param responseHandler 响应处理器
      * @param listener 请求监听器
-     * @return HttpRequest.Helper 你还可以继续设置一些参数，最后调用go()方法即可
+     * @return Helper 你还可以继续设置一些参数，最后调用go()方法即可
      */
-    public HttpRequest.Helper newRequest(String url, HttpResponseHandler responseHandler, HttpRequest.Listener<?> listener){
-        return new HttpRequest.Helper(this, url, responseHandler, listener);
+    public HttpHelper newRequest(String url, HttpResponseHandler responseHandler, HttpRequest.Listener<?> listener){
+        return new HttpHelper(this, url, responseHandler, listener);
     }
 
     /**
@@ -97,10 +97,10 @@ public class GoHttp {
      * @param requestObject 请求对象
      * @param responseHandler 响应处理器
      * @param listener 请求监听器
-     * @return HttpRequest.Helper 你还可以继续设置一些参数，最后调用go()方法即可
+     * @return Helper 你还可以继续设置一些参数，最后调用go()方法即可
      */
-    public HttpRequest.Helper newRequest(Request requestObject, HttpResponseHandler responseHandler, HttpRequest.Listener<?> listener){
-        return new HttpRequest.Helper(this, requestObject, responseHandler, listener);
+    public HttpHelper newRequest(Request requestObject, HttpResponseHandler responseHandler, HttpRequest.Listener<?> listener){
+        return new HttpHelper(this, requestObject, responseHandler, listener);
     }
 
     /**

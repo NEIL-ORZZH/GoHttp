@@ -25,8 +25,11 @@ import org.apache.http.HttpResponse;
 
 import me.xiaopan.android.gohttp.CacheConfig;
 import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.android.gohttp.HttpHelper;
 import me.xiaopan.android.gohttp.HttpRequest;
 import me.xiaopan.android.gohttp.HttpRequestFuture;
+import me.xiaopan.android.gohttp.HttpResponseHandler;
+import me.xiaopan.android.gohttp.MethodType;
 import me.xiaopan.android.gohttp.StringHttpResponseHandler;
 import me.xiaopan.android.gohttp.header.ContentType;
 import me.xiaopan.android.gohttp.sample.MyActivity;
@@ -51,20 +54,29 @@ public class StringActivity extends MyActivity {
 	}
 	
 	private void load(){
-        httpRequestFuture = GoHttp.with(getBaseContext()).newRequest("http://www.miui.com/forum.php", new StringHttpResponseHandler(), new HttpRequest.Listener<Object>() {
+        GoHttp goHttp = GoHttp.with(getBaseContext());
+        httpRequestFuture = goHttp.newRequest("http://www.miui.com/forum.php", new StringHttpResponseHandler(), new HttpRequest.Listener<String>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
-
+                getHintView().loading("MIUI首页");
             }
 
             @Override
-            public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, Object responseContent, boolean isCache, boolean isContinueCallback) {
-
+            public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, String responseContent, boolean isCache, boolean isContinueCallback) {
+                // 显示HTML源代码
+                ContentType contentType = ContentType.fromHttpMessage(httpResponse);
+                webViewManager.getWebView().loadDataWithBaseURL(null, responseContent, contentType.getMimeType(), contentType.getCharset("UTF-8"), null);
+                getHintView().hidden();
             }
 
             @Override
             public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean isCache, boolean isContinueCallback) {
-
+                getHintView().failure(Failure.buildByException(getBaseContext(), failure.getException()), new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        load();
+                    }
+                });
             }
 
             @Override
@@ -76,8 +88,7 @@ public class StringActivity extends MyActivity {
             public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength) {
                 getHintView().setProgress((int) totalLength, (int) completedLength);
             }
-        }).cacheConfig(new CacheConfig(20 * 1000))
-          .go();
+        }).cacheConfig(new CacheConfig(20 * 1000)).go();
 	}
 
 	@Override
