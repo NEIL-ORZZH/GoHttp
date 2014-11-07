@@ -88,7 +88,7 @@ public class StringActivity extends MyActivity {
 
 ##Downloads
 >* [go-http-1.1.0.jar](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.0.jar)
->* [go-http-1.1.0-sources.jar](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.0-sources.jar)
+>* [go-http-1.1.0-sources.zip](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.0-sources.zip)
 
 Dependencies
 >* [gson-2.2.4.jar](https://github.com/xiaopansky/GoHttp/raw/master/library/libs/gson-2.2.4.jar)
