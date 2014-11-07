@@ -36,6 +36,7 @@ public class GoHttp {
     private Context context;	//上下文
     private Handler handler;	//异步处理器
     private NetManager netManager;
+    private SyncManager syncManager;    // 同步管理器
     private CacheManager cacheManager;
     private ExecutorService executorService;	//线程池
     private HttpClientManager httpClientManager;	//Http客户端管理器
@@ -220,5 +221,20 @@ public class GoHttp {
      */
     public void setNetManager(NetManager netManager) {
         this.netManager = netManager;
+    }
+
+    /**
+     * 获取同步管理器
+     * @return 同步管理器
+     */
+    public SyncManager getSyncManager() {
+        if(syncManager == null){
+            synchronized (GoHttp.class){
+                if(syncManager == null){
+                    syncManager = new SyncManager();
+                }
+            }
+        }
+        return syncManager;
     }
 }

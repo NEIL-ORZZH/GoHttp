@@ -38,7 +38,7 @@ import java.lang.reflect.Type;
 import me.xiaopan.android.gohttp.requestobject.ResponseBody;
 
 /**
- * 默认的字符串Http响应处理器
+ * 默认的JSON Http响应处理器，用于JSON格式的字符串转成Java对象
  */
 public class JsonHttpResponseHandler implements HttpResponseHandler {
     private Class<?> responseClass;

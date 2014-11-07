@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 默认的字符串Http响应处理器
+ * 默认的字节数组Http响应处理器，用于将Http响应转成字节数组
  */
 public class BinaryHttpResponseHandler implements HttpResponseHandler {
 

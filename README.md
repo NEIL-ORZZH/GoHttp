@@ -7,7 +7,7 @@ GoHttp是Android上的一个用来发送Http请求的库，旨在用最简单、
 >* 全新设计的API，让发送Http请求以及处理请求结果、监听请求过程和进度更加简单、高效、舒适；
 >* 全球首个支持用请求对象发送Http请求的网络框架，这将大大降低程序复杂度，让你越用越爽；
 >* 支持在本地缓存Http响应；
->* 内置四种Http响应处理器，可以直接实现将Http响应转成字符串、字节数组或下载文件以及将JSON格式的字符串转成Java对象；
+>* 内置多种Http响应处理器，可以直接实现将Http响应转成字符串、字节数组或下载文件以及将JSON格式的字符串转成Java对象；
 >* 完全的开放，你可以自定义缓存管理、请求处理、Http响应处理，甚至添加一种新的HttpRequest；
 >* 内置一系列的HttpHeader，方便你往HttpRequest中添加Header或从HttpResponse中获取Header；
 
@@ -87,11 +87,17 @@ public class StringActivity extends MyActivity {
 >* [取消请求](https://github.com/xiaopansky/GoHttp/wiki/cancel-request)
 
 ##Downloads
->* [go-http-1.0.0.jar](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.0.0.jar)
->* [go-http-1.0.0-sources.jar](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.0.0-sources.jar)
+>* [go-http-1.1.0.jar](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.0.jar)
+>* [go-http-1.1.0-sources.jar](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.0-sources.jar)
 
 Dependencies
 >* [gson-2.2.4.jar](https://github.com/xiaopansky/GoHttp/raw/master/library/libs/gson-2.2.4.jar)
+
+##Change Log
+####1.1.0
+>* ``优化``。缓存的读取增加了同步限制，数据更安全
+>* ``优化``。对于缓存ID相同的请求增加了同步限制，不再允许异步请求，这样第二个请求就可以使用第一个请求的缓存数据了
+>* ``新增``。新增EmptyHttpResponseHandler，用来处理响应实体为空的Http请求
 
 ##License
 ```java

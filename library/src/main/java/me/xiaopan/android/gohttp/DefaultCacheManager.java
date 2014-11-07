@@ -45,7 +45,7 @@ public class DefaultCacheManager implements CacheManager{
     private String cacheDirectory;	// 缓存目录
 
     @Override
-    public void saveHttpResponseToCache(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+    public synchronized void saveHttpResponseToCache(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         HttpEntity httpEntity = httpResponse.getEntity();
         if(httpEntity == null){
             throw new IOException("Http实体是null");
@@ -150,7 +150,7 @@ public class DefaultCacheManager implements CacheManager{
     }
 
     @Override
-    public boolean isHasAvailableCache(HttpRequest httpRequest) {
+    public synchronized boolean isHasAvailableCache(HttpRequest httpRequest) {
         // 如果不需要缓存直接返回false
         if(httpRequest.getCacheConfig() == null){
             return false;
@@ -216,7 +216,7 @@ public class DefaultCacheManager implements CacheManager{
     }
 
     @Override
-    public HttpResponse readHttpResponseFromCache(HttpRequest httpRequest) {
+    public synchronized HttpResponse readHttpResponseFromCache(HttpRequest httpRequest) {
         // 创建缓存文件
         String cacheId = httpRequest.getCacheConfig().getId();
         File statusLineCacheFile = getCacheFile(httpRequest.getGoHttp(), cacheId + ".status_line");
@@ -271,7 +271,7 @@ public class DefaultCacheManager implements CacheManager{
     /**
      * 获取缓存文件
      */
-    private File getCacheFile(GoHttp goHttp, String fileName){
+    private synchronized File getCacheFile(GoHttp goHttp, String fileName){
         if(cacheDirectory != null && !"".equals(cacheDirectory)){
             return new File(cacheDirectory + File.separator + "go_http" + File.separator  + fileName);
         }else{
@@ -284,7 +284,7 @@ public class DefaultCacheManager implements CacheManager{
      * @param context 上下文
      * @return 如果SD卡可用，就返回外部缓存目录，否则返回机身自带缓存目录
      */
-    private File getDynamicCacheDir(Context context){
+    private synchronized File getDynamicCacheDir(Context context){
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
             File dir = context.getExternalCacheDir();
             if(dir == null){

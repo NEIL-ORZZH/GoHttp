@@ -49,7 +49,7 @@ public class ContentType extends BasicHeader{
     }
 
     public ContentType(String mimeType, String charset){
-        super(NAME, mimeType+";charset="+charset);
+        super(NAME, mimeType+"; charset="+charset);
         this.mimeType = mimeType;
         this.charset = charset;
     }

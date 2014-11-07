@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * 下载Http响应处理器
+ * 下载Http响应处理器，用于下载文件
  */
 public class DownloadHttpResponseHandler implements HttpResponseHandler {
     private File file;

@@ -31,7 +31,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 /**
- * 默认的字符串Http响应处理器
+ * 默认的字符串Http响应处理器，用于将Http响应转成字符串
  */
 public class StringHttpResponseHandler implements HttpResponseHandler {
 
