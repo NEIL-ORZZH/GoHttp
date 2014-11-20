@@ -85,15 +85,19 @@ public class StringActivity extends MyActivity {
 >* [使用请求对象来发送请求](https://github.com/xiaopansky/GoHttp/wiki/use-request-object)
 >* [使用缓存功能实现离线模式](https://github.com/xiaopansky/GoHttp/wiki/cache-http-response)
 >* [取消请求](https://github.com/xiaopansky/GoHttp/wiki/cancel-request)
+>* [使用ResponseHandleCompletedAfterListener在异步线程中处理响应结果](https://github.com/xiaopansky/GoHttp/wiki/ResponseHandleCompletedAfterListener)
 
 ##Downloads
->* [go-http-1.1.0.jar](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.0.jar)
->* [go-http-1.1.0-sources.zip](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.0-sources.zip)
+>* [go-http-1.1.1.jar](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.1.jar)
+>* [go-http-1.1.1-sources.zip](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.1-sources.zip)
 
 Dependencies
 >* [gson-2.2.4.jar](https://github.com/xiaopansky/GoHttp/raw/master/library/libs/gson-2.2.4.jar)
 
 ##Change Log
+####1.1.1
+>* ``新增`` ResponseHandleCompletedAfterListener.onResponseHandleAfter()方法增加Object类型的返回值，这样你就可以中途改变ResponseObject的类型，详情请参见[使用ResponseHandleCompletedAfterListener在异步线程中处理响应结果](https://github.com/xiaopansky/GoHttp/wiki/ResponseHandleCompletedAfterListener)
+
 ####1.1.0
 >* ``优化``。缓存的读取增加了同步限制，数据更安全
 >* ``优化``。对于缓存ID相同的请求增加了同步限制，不再允许异步请求，这样第二个请求就可以使用第一个请求的缓存数据了

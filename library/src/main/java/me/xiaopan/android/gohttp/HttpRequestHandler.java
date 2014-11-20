@@ -63,7 +63,7 @@ public class HttpRequestHandler implements Runnable{
         boolean isContinueCallback = true;
 		HttpResponse httpResponse = null;
 
-		// 如果需要缓存并且本地缓存可以使用，就先读取本地缓存
+		// 尝试读取本地缓存
 		if(isCache && httpRequest.getGoHttp().getCacheManager().isHasAvailableCache(httpRequest)){
             if(httpRequest.isCanceled()){
                 httpRequest.finish();
@@ -98,6 +98,15 @@ public class HttpRequestHandler implements Runnable{
                         return;
                     }
 
+                    // 再次处理响应
+                    if(!(responseObject instanceof HttpRequest.Failure) && httpRequest.getResponseHandleCompletedAfterListener() != null){
+                        //noinspection unchecked
+                        Object response = httpRequest.getResponseHandleCompletedAfterListener().onResponseHandleAfter(httpRequest, httpResponse, responseObject, true, isContinueCallback);
+                        if(response != null){
+                            responseObject = response;
+                        }
+                    }
+
                     // 如果不刷新缓存就意味着请求已经结束了
                     if(!isRefreshCache){
                         httpRequest.finish();
@@ -106,10 +115,6 @@ public class HttpRequestHandler implements Runnable{
                     if(responseObject instanceof HttpRequest.Failure){
                         new FailedRunnable(httpRequest, httpResponse, (HttpRequest.Failure) responseObject, true, isContinueCallback).execute();
                     }else{
-                        if(httpRequest.getResponseHandleCompletedAfterListener() != null){
-                            //noinspection unchecked
-                            httpRequest.getResponseHandleCompletedAfterListener().onResponseHandleAfter(httpRequest, httpResponse, responseObject, true, isContinueCallback);
-                        }
                         new CompletedRunnable(httpRequest, httpResponse, responseObject, true, isContinueCallback).execute();
                     }
                     // 如果不刷新缓存就意味着请求已经结束了
@@ -175,27 +180,26 @@ public class HttpRequestHandler implements Runnable{
                 e.printStackTrace();
 
                 httpRequest.finish();
-                httpRequest.finish();
                 if(httpRequest.isCanceled()){
                     if(isContinueCallback){
                         new CancelRunnable(httpRequest).execute();
                     }
                     if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 缓存Http响应时发生异常"+"; "+httpRequest.getUrl());
-                    if(reentrantLock != null) reentrantLock.unlock();
+                    reentrantLock.unlock();
                     return;
                 }
                 if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Failed : 缓存Http响应时发生异常"+"; "+httpRequest.getUrl());
                 if(isContinueCallback){
                     new FailedRunnable(httpRequest, httpResponse, new HttpRequest.Failure(e), false, false).execute();
                 }
-                if(reentrantLock != null) reentrantLock.unlock();
+                reentrantLock.unlock();
                 return;
             }
             if(httpRequest.isCanceled()){
                 httpRequest.finish();
                 new CancelRunnable(httpRequest).execute();
                 if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 缓存完Http响应"+"; "+httpRequest.getUrl());
-                if(reentrantLock != null) reentrantLock.unlock();
+                reentrantLock.unlock();
                 return;
             }
             if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Cache : 已缓存Http取响应"+"; "+httpRequest.getUrl());
@@ -209,11 +213,21 @@ public class HttpRequestHandler implements Runnable{
             return;
         }
 
+        // 处理响应
         Object responseObject;
         try {
             responseObject = httpRequest.getResponseHandler().handleResponse(httpRequest, httpResponse);
             if(responseObject == null){
                 throw new Exception("response object is null");
+            }
+
+            // 再次处理响应
+            if(!(responseObject instanceof HttpRequest.Failure) && httpRequest.getResponseHandleCompletedAfterListener() != null){
+                //noinspection unchecked
+                Object response = httpRequest.getResponseHandleCompletedAfterListener().onResponseHandleAfter(httpRequest, httpResponse, responseObject, false, false);
+                if(response != null){
+                    responseObject = response;
+                }
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -240,19 +254,16 @@ public class HttpRequestHandler implements Runnable{
         }
         if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Net : 已处理完Http响应"+"; "+httpRequest.getUrl());
 
-        httpRequest.finish();
+        // 回调结果
         if(responseObject instanceof HttpRequest.Failure){
             HttpRequest.Failure failure = (HttpRequest.Failure) responseObject;
             new FailedRunnable(httpRequest, httpResponse, failure, false, false).execute();
             if(httpRequest.getGoHttp().isDebugMode()) Log.e(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Failed : "+failure.toString()+"; "+httpRequest.getUrl());
         }else{
-            if(httpRequest.getResponseHandleCompletedAfterListener() != null){
-                //noinspection unchecked
-                httpRequest.getResponseHandleCompletedAfterListener().onResponseHandleAfter(httpRequest, httpResponse, responseObject, false, false);
-            }
             new CompletedRunnable(httpRequest, httpResponse, responseObject, false, false).execute();
             if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Completed : 走到了最后"+"; "+httpRequest.getUrl());
         }
+        httpRequest.finish();
         if(reentrantLock != null) reentrantLock.unlock();
     }
 

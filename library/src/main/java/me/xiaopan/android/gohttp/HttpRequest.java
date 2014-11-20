@@ -283,7 +283,7 @@ public class HttpRequest{
      * @param <T>
      */
     public interface ResponseHandleCompletedAfterListener<T>{
-        public void onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, T responseContent, boolean isCache, boolean isContinueCallback);
+        public Object onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, T responseContent, boolean isCache, boolean isContinueCallback) throws Throwable;
     }
 
     /**
