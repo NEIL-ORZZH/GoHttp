@@ -95,6 +95,9 @@ Dependencies
 >* [gson-2.2.4.jar](https://github.com/xiaopansky/GoHttp/raw/master/library/libs/gson-2.2.4.jar)
 
 ##Change Log
+####1.1.2
+>* ``优化``. HttpRequest.Listener的各项回调中都过滤了取消，这就有效防止了回调发出后Activity或Fragment立马销毁，然后回调执行的时候用了上下文导致崩溃
+
 ####1.1.1
 >* ``新增`` ResponseHandleCompletedAfterListener.onResponseHandleAfter()方法增加Object类型的返回值，这样你就可以中途改变ResponseObject的类型，详情请参见[使用ResponseHandleCompletedAfterListener在异步线程中处理响应结果](https://github.com/xiaopansky/GoHttp/wiki/ResponseHandleCompletedAfterListener)
 

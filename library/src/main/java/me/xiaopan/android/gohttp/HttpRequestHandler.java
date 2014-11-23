@@ -90,15 +90,9 @@ public class HttpRequestHandler implements Runnable{
                     if(responseObject == null){
                         throw new Exception("response object is null");
                     }
-                    if(httpRequest.isCanceled()){
-                        httpRequest.finish();
-                        new CancelRunnable(httpRequest).execute();
-                        if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 处理完缓存"+"; "+httpRequest.getUrl());
-                        reentrantLock.unlock();
-                        return;
-                    }
 
                     // 再次处理响应
+                    isContinueCallback = isRefreshCache && httpRequest.getCacheConfig().isRefreshCallback();
                     if(!(responseObject instanceof HttpRequest.Failure) && httpRequest.getResponseHandleCompletedAfterListener() != null){
                         //noinspection unchecked
                         Object response = httpRequest.getResponseHandleCompletedAfterListener().onResponseHandleAfter(httpRequest, httpResponse, responseObject, true, isContinueCallback);
@@ -106,12 +100,18 @@ public class HttpRequestHandler implements Runnable{
                             responseObject = response;
                         }
                     }
+                    if(httpRequest.isCanceled()){
+                        httpRequest.finish();
+                        new CancelRunnable(httpRequest).execute();
+                        if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 处理完缓存数据"+"; "+httpRequest.getUrl());
+                        reentrantLock.unlock();
+                        return;
+                    }
 
                     // 如果不刷新缓存就意味着请求已经结束了
                     if(!isRefreshCache){
                         httpRequest.finish();
                     }
-                    isContinueCallback = isRefreshCache && httpRequest.getCacheConfig().isRefreshCallback();
                     if(responseObject instanceof HttpRequest.Failure){
                         new FailedRunnable(httpRequest, httpResponse, (HttpRequest.Failure) responseObject, true, isContinueCallback).execute();
                     }else{
@@ -301,6 +301,10 @@ public class HttpRequestHandler implements Runnable{
 
         @Override
         public void run() {
+            if(httpRequest.isCanceled()){
+                return;
+            }
+
             httpRequest.getListener().onFailed(httpRequest, httpResponse, failure, isCache, isContinueCallback);
         }
 
@@ -326,6 +330,10 @@ public class HttpRequestHandler implements Runnable{
 
         @Override
         public void run() {
+            if(httpRequest.isCanceled()){
+                return;
+            }
+
             //noinspection unchecked
             httpRequest.getListener().onCompleted(httpRequest, httpResponse, responseObject, isCache, isContinueCallback);
         }
@@ -348,6 +356,10 @@ public class HttpRequestHandler implements Runnable{
 
         @Override
         public void run() {
+            if(httpRequest.isCanceled()){
+                return;
+            }
+
             httpRequest.getProgressListener().onUpdateProgress(httpRequest, totalLength, completedLength);
         }
 

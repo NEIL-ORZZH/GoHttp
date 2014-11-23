@@ -293,7 +293,9 @@ public class HttpHelper {
             this.method = method.value();
         }
         if(this.method == null){
-            Log.e(GoHttp.LOG_TAG, "未知的Method，已设为默认值GET");
+            if(goHttp.isDebugMode()){
+                Log.d(GoHttp.LOG_TAG, "未知的Method Type，已设为默认值GET");
+            }
             this.method = MethodType.GET;
         }
 
