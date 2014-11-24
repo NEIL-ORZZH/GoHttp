@@ -88,8 +88,8 @@ public class StringActivity extends MyActivity {
 >* [使用ResponseHandleCompletedAfterListener在异步线程中处理响应结果](https://github.com/xiaopansky/GoHttp/wiki/ResponseHandleCompletedAfterListener)
 
 ##Downloads
->* [go-http-1.1.1.jar](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.1.jar)
->* [go-http-1.1.1-sources.zip](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.1-sources.zip)
+>* [go-http-1.1.2.jar](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.2.jar)
+>* [go-http-1.1.2-sources.zip](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.2-sources.zip)
 
 Dependencies
 >* [gson-2.2.4.jar](https://github.com/xiaopansky/GoHttp/raw/master/library/libs/gson-2.2.4.jar)
