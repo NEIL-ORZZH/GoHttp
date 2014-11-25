@@ -18,9 +18,11 @@ package me.xiaopan.android.gohttp;
 
 import android.util.Log;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -145,7 +147,7 @@ public class HttpRequestHandler implements Runnable{
             httpResponse = httpRequest.getGoHttp().getNetManager().getHttpResponse(httpRequest);
         } catch (Throwable e) {
             e.printStackTrace();
-
+            releaseConnect(httpResponse);
             httpRequest.finish();
             if(httpRequest.isCanceled()){
                 if(isContinueCallback){
@@ -164,6 +166,7 @@ public class HttpRequestHandler implements Runnable{
             return;
         }
         if(httpRequest.isCanceled()){
+            releaseConnect(httpResponse);
             httpRequest.finish();
             new CancelRunnable(httpRequest).execute();
             if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 从网络读取完Http响应"+"; "+httpRequest.getUrl());
@@ -178,7 +181,7 @@ public class HttpRequestHandler implements Runnable{
                 httpRequest.getGoHttp().getCacheManager().saveHttpResponseToCache(httpRequest, httpResponse);
             } catch (IOException e) {
                 e.printStackTrace();
-
+                releaseConnect(httpResponse);
                 httpRequest.finish();
                 if(httpRequest.isCanceled()){
                     if(isContinueCallback){
@@ -196,6 +199,7 @@ public class HttpRequestHandler implements Runnable{
                 return;
             }
             if(httpRequest.isCanceled()){
+                releaseConnect(httpResponse);
                 httpRequest.finish();
                 new CancelRunnable(httpRequest).execute();
                 if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 缓存完Http响应"+"; "+httpRequest.getUrl());
@@ -207,6 +211,7 @@ public class HttpRequestHandler implements Runnable{
 
         // 不再回调了就直接结束
         if(!isContinueCallback){
+            releaseConnect(httpResponse);
             httpRequest.finish();
             if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Completed : 不需要继续回调"+"; "+httpRequest.getUrl());
             reentrantLock.unlock();
@@ -231,6 +236,7 @@ public class HttpRequestHandler implements Runnable{
             }
         } catch (Throwable e) {
             e.printStackTrace();
+            releaseConnect(httpResponse);
             httpRequest.finish();
 
             if(httpRequest.isCanceled()){
@@ -246,6 +252,7 @@ public class HttpRequestHandler implements Runnable{
             return;
         }
         if(httpRequest.isCanceled()){
+            releaseConnect(httpResponse);
             httpRequest.finish();
             new CancelRunnable(httpRequest).execute();
             if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 处理完Http响应"+"; "+httpRequest.getUrl());
@@ -265,6 +272,33 @@ public class HttpRequestHandler implements Runnable{
         }
         httpRequest.finish();
         if(reentrantLock != null) reentrantLock.unlock();
+    }
+
+    public static void releaseConnect(HttpResponse httpResponse){
+        if(httpResponse == null){
+            return;
+        }
+
+        HttpEntity httpEntity = httpResponse.getEntity();
+        if(httpEntity == null){
+            return;
+        }
+
+        InputStream inputStream = null;
+        try {
+            inputStream = httpEntity.getContent();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(inputStream == null){
+            return;
+        }
+
+        try {
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static class CancelRunnable implements Runnable{

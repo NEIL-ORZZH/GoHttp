@@ -95,6 +95,9 @@ Dependencies
 >* [gson-2.2.4.jar](https://github.com/xiaopansky/GoHttp/raw/master/library/libs/gson-2.2.4.jar)
 
 ##Change Log
+#1.1.3
+>* ``优化``. 优化网络连接的处理，碰到取消或异常的时候主动关闭输入流及时释放连接，避免堵塞连接池，造成ConnectionPoolTimeoutException异常
+
 ####1.1.2
 >* ``优化``. HttpRequest.Listener的各项回调中都过滤了取消，这就有效防止了回调发出后Activity或Fragment立马销毁，然后回调执行的时候用了上下文导致崩溃
 
