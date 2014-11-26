@@ -20,6 +20,7 @@ import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.entity.FileEntity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -199,7 +200,6 @@ public class HttpRequestHandler implements Runnable{
                 return;
             }
             if(httpRequest.isCanceled()){
-                releaseConnect(httpResponse);
                 httpRequest.finish();
                 new CancelRunnable(httpRequest).execute();
                 if(httpRequest.getGoHttp().isDebugMode()) Log.w(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Canceled : 缓存完Http响应"+"; "+httpRequest.getUrl());
@@ -211,7 +211,6 @@ public class HttpRequestHandler implements Runnable{
 
         // 不再回调了就直接结束
         if(!isContinueCallback){
-            releaseConnect(httpResponse);
             httpRequest.finish();
             if(httpRequest.getGoHttp().isDebugMode()) Log.d(GoHttp.LOG_TAG, httpRequest.getName()+"; "+"Completed : 不需要继续回调"+"; "+httpRequest.getUrl());
             reentrantLock.unlock();
@@ -280,7 +279,7 @@ public class HttpRequestHandler implements Runnable{
         }
 
         HttpEntity httpEntity = httpResponse.getEntity();
-        if(httpEntity == null){
+        if(httpEntity == null || httpEntity instanceof FileEntity){
             return;
         }
 
@@ -288,7 +287,7 @@ public class HttpRequestHandler implements Runnable{
         try {
             inputStream = httpEntity.getContent();
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         if(inputStream == null){
             return;
