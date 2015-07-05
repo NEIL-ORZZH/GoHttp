@@ -26,10 +26,10 @@ import android.widget.EditText;
 
 import org.apache.http.HttpResponse;
 
-import me.xiaopan.android.gohttp.GoHttp;
-import me.xiaopan.android.gohttp.HttpRequest;
-import me.xiaopan.android.gohttp.StringHttpResponseHandler;
-import me.xiaopan.android.gohttp.header.ContentType;
+import me.xiaopan.gohttp.GoHttp;
+import me.xiaopan.gohttp.HttpRequest;
+import me.xiaopan.gohttp.StringHttpResponseHandler;
+import me.xiaopan.gohttp.header.ContentType;
 import me.xiaopan.gohttpsample.MyActivity;
 import me.xiaopan.gohttpsample.R;
 import me.xiaopan.gohttpsample.net.Failure;

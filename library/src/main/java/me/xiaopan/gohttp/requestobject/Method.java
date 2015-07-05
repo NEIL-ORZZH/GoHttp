@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Peng fei Pan
+ * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package me.xiaopan.gohttpsample.net;
+package me.xiaopan.gohttp.requestobject;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import me.xiaopan.gohttp.MethodType;
-import me.xiaopan.gohttp.requestobject.Method;
-import me.xiaopan.gohttp.requestobject.Request;
 
 /**
- * 基本请求，可以将一些每个请求都必须有的参数定义在此
+ * 请求方式
  */
-@Method(MethodType.GET)
-public class BaseRequest implements Request {
-
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface Method {
+    public MethodType value();
 }

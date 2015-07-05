@@ -26,10 +26,10 @@ import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
 
-import me.xiaopan.android.gohttp.GoHttp;
-import me.xiaopan.android.gohttp.HttpRequest;
-import me.xiaopan.android.gohttp.HttpRequestFuture;
-import me.xiaopan.android.gohttp.JsonHttpResponseHandler;
+import me.xiaopan.gohttp.GoHttp;
+import me.xiaopan.gohttp.HttpRequest;
+import me.xiaopan.gohttp.HttpRequestFuture;
+import me.xiaopan.gohttp.JsonHttpResponseHandler;
 import me.xiaopan.gohttpsample.MyActivity;
 import me.xiaopan.gohttpsample.R;
 import me.xiaopan.gohttpsample.beans.Weather;

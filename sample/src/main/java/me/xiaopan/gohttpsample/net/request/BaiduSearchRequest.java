@@ -16,11 +16,11 @@
 
 package me.xiaopan.gohttpsample.net.request;
 
-import me.xiaopan.android.gohttp.requestobject.CacheConfig;
-import me.xiaopan.android.gohttp.requestobject.Name;
-import me.xiaopan.android.gohttp.requestobject.Param;
-import me.xiaopan.android.gohttp.requestobject.URL;
-import me.xiaopan.android.gohttp.requestobject.Value;
+import me.xiaopan.gohttp.requestobject.CacheConfig;
+import me.xiaopan.gohttp.requestobject.Name;
+import me.xiaopan.gohttp.requestobject.Param;
+import me.xiaopan.gohttp.requestobject.URL;
+import me.xiaopan.gohttp.requestobject.Value;
 import me.xiaopan.gohttpsample.R;
 import me.xiaopan.gohttpsample.net.BaseRequest;
 
