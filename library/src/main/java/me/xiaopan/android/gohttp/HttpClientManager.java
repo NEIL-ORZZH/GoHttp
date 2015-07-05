@@ -56,12 +56,15 @@ import me.xiaopan.android.gohttp.httpclient.RetryHandler;
  * Http客户端配置
  */
 public class HttpClientManager {
-	public static final int DEFAULT_MAX_RETRIES = 5;	//默认最大重试次数
-	public static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;	//默认Socket缓存池大小
-	public static final int DEFAULT_MAX_CONNECTIONS = 10;	//默认最大连接数
-	public static final int DEFAULT_TIMEOUT = 20000;	//默认连接超时时间
-    public static final int DEFAULT_RETRY_SLEEP_TIME_MILLIS = 1500;
-    public static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
+    private final static int DEFAULT_WAIT_TIMEOUT = 60*1000;   // 默认从连接池中获取连接的最大等待时间
+    private final static int DEFAULT_READ_TIMEOUT = 20*1000;   // 默认读取超时时间
+    private final static int DEFAULT_CONNECT_TIMEOUT = 20*1000;    // 默认连接超时时间
+    private final static int DEFAULT_MAX_ROUTE_CONNECTIONS = 400;    // 默认每个路由的最大连接数
+    private static final int DEFAULT_MAX_CONNECTIONS = 800;  // 默认最大连接数
+    private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;  // 默认Socket缓存大小
+    private static final int DEFAULT_MAX_RETRIES = 1;	//默认最大重试次数
+    private static final int DEFAULT_RETRY_SLEEP_TIME_MILLIS = 1500;
+    private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
 	
     private HttpContext httpContext;	//Http上下文
     private DefaultHttpClient httpClient;	//Http客户端
@@ -69,19 +72,21 @@ public class HttpClientManager {
 	
     public HttpClientManager(SchemeRegistry schemeRegistry){
     	BasicHttpParams httpParams = new BasicHttpParams();
-        HttpConnectionParams.setTcpNoDelay(httpParams, true);	//开启TCP无延迟
-        HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);	//设置使用的Http协议版本
-		HttpProtocolParams.setUserAgent(httpParams, DEFAULT_USER_AGENT);	//设置浏览器标识
-		httpContext = new SyncBasicHttpContext(new BasicHttpContext());	//初始化Http上下文
+        ConnManagerParams.setTimeout(httpParams, DEFAULT_WAIT_TIMEOUT);
+        ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(DEFAULT_MAX_ROUTE_CONNECTIONS));
+        ConnManagerParams.setMaxTotalConnections(httpParams, DEFAULT_MAX_CONNECTIONS);
+        HttpConnectionParams.setTcpNoDelay(httpParams, true);
+        HttpConnectionParams.setSoTimeout(httpParams, DEFAULT_READ_TIMEOUT);
+        HttpConnectionParams.setConnectionTimeout(httpParams, DEFAULT_CONNECT_TIMEOUT);
+        HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
+        HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
+		HttpProtocolParams.setUserAgent(httpParams, DEFAULT_USER_AGENT);
         httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, schemeRegistry), httpParams);
         httpClient.addRequestInterceptor(new GzipProcessRequestInterceptor());
-        httpClient.addRequestInterceptor(new AddRequestHeaderRequestInterceptor(getHeaderMap()));
+        httpClient.addRequestInterceptor(new AddRequestHeaderRequestInterceptor(clientHeaderMap = new HashMap<String, String>()));
         httpClient.addResponseInterceptor(new GzipProcessResponseInterceptor());
         httpClient.setHttpRequestRetryHandler(new RetryHandler(DEFAULT_MAX_RETRIES, DEFAULT_RETRY_SLEEP_TIME_MILLIS));
-    	clientHeaderMap = new HashMap<String, String>();
-    	setTimeout(DEFAULT_TIMEOUT);
-    	setMaxConnections(DEFAULT_MAX_CONNECTIONS);
-    	setSocketBufferSize(DEFAULT_SOCKET_BUFFER_SIZE);
+		httpContext = new SyncBasicHttpContext(new BasicHttpContext());
 	}
     
     /**
@@ -166,16 +171,11 @@ public class HttpClientManager {
     /**
      * Set the connection and socket timeout. By default, 10 seconds.
      *
-     * @param timeout the connect/socket timeout in milliseconds, at least 1 second
+     * @param connectTimeout the connect/socket timeout in milliseconds, at least 1 second
      */
-    public void setTimeout(int timeout) {
-        if (timeout < 1000){
-        	timeout = DEFAULT_TIMEOUT;
-        }
+    public void setConnectTimeout(int connectTimeout) {
         final HttpParams httpParams = this.httpClient.getParams();
-        ConnManagerParams.setTimeout(httpParams, timeout);
-        HttpConnectionParams.setSoTimeout(httpParams, timeout);
-        HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
+        HttpConnectionParams.setConnectionTimeout(httpParams, connectTimeout);
     }
 
     /**
@@ -217,7 +217,7 @@ public class HttpClientManager {
 	
 	/**
      * 设置Cookie仓库，将在发送请求时使用此Cookie仓库
-     * @param cookieStore 另请参见 {@link me.xiaopan.android.gohttp.HttpClientManager.PersistentCookieStore}
+     * @param cookieStore 另请参见 {@link me.xiaopan.android.gohttp.httpclient.PersistentCookieStore}
      */
     public void setCookieStore(CookieStore cookieStore) {
 		httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
