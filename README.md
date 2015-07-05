@@ -14,11 +14,13 @@ GoHttp是Android上的一个用来发送Http请求的库，旨在用最简单、
 ###使用（Usage）
 ####1. 导入GoHttp（Import GoHttp to your project）
 **Gradle**
+
 ```groovy
 compile 'me.xiaopan:gohttp:1.2.0'
 ```
 
 **Eclipse**
+
 1. 首先到[releases](https://github.com/xiaopansky/GoHttp/releases)页面下载最新版本的aar文件
 2. 然后改后缀名为zip并解压
 3. 最后将classes.jar重命名为gohttp-`1.2.0`.jar并拷贝到你项目的libs目录下
