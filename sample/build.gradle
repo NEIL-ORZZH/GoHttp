@@ -8,8 +8,8 @@ android {
         applicationId "me.xiaopan.gohttpsample"
         minSdkVersion 8
         targetSdkVersion 22
-        versionCode 250
-        versionName '2.5.0'
+        versionCode 100
+        versionName '1.0.0'
     }
 
     buildTypes {
