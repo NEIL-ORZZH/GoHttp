@@ -1,8 +1,8 @@
-package me.xiaopan.android.gohttp.sample;
+package me.xiaopan.gohttpsample;
 
 import android.app.ListActivity;
 
-import me.xiaopan.android.gohttp.sample.widget.HintView;
+import me.xiaopan.gohttpsample.widget.HintView;
 
 public class MyListActivity extends ListActivity {
 

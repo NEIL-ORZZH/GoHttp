@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.sample.util;
+package me.xiaopan.gohttpsample.util;
 
 import android.annotation.SuppressLint;
 import android.webkit.WebSettings;

@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package me.xiaopan.gohttpsample;
 
-package me.xiaopan.android.gohttp.sample.net;
+import android.app.Application;
 
-import me.xiaopan.android.gohttp.MethodType;
-import me.xiaopan.android.gohttp.requestobject.Method;
-import me.xiaopan.android.gohttp.requestobject.Request;
+import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.gohttpsample.BuildConfig;
 
-/**
- * 基本请求，可以将一些每个请求都必须有的参数定义在此
- */
-@Method(MethodType.GET)
-public class BaseRequest implements Request {
-
+public class MyApplication extends Application {
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		GoHttp.with(getBaseContext()).setDebugMode(BuildConfig.DEBUG);
+	}
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.xiaopan.android.gohttp.sample.beans;
+package me.xiaopan.gohttpsample.beans;
 
 import com.google.gson.annotations.Expose;
 

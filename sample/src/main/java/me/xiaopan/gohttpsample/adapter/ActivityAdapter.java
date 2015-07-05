@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.sample.adapter;
+package me.xiaopan.gohttpsample.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,8 +27,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.sample.beans.ActivityItem;
+import me.xiaopan.gohttpsample.R;
+import me.xiaopan.gohttpsample.beans.ActivityItem;
 
 public class ActivityAdapter extends BaseAdapter {
 

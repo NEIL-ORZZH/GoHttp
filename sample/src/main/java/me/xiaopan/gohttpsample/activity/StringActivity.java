@@ -13,87 +13,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package me.xiaopan.android.gohttp.sample.activity;
+package me.xiaopan.gohttpsample.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.EditText;
 
 import org.apache.http.HttpResponse;
 
+import me.xiaopan.android.gohttp.CacheConfig;
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.android.gohttp.HttpRequest;
+import me.xiaopan.android.gohttp.HttpRequestFuture;
 import me.xiaopan.android.gohttp.StringHttpResponseHandler;
 import me.xiaopan.android.gohttp.header.ContentType;
-import me.xiaopan.android.gohttp.sample.MyActivity;
-import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.sample.net.Failure;
-import me.xiaopan.android.gohttp.sample.net.request.BaiduSearchRequest;
-import me.xiaopan.android.gohttp.sample.util.Utils;
-import me.xiaopan.android.gohttp.sample.util.WebViewManager;
+import me.xiaopan.gohttpsample.MyActivity;
+import me.xiaopan.gohttpsample.R;
+import me.xiaopan.gohttpsample.net.Failure;
+import me.xiaopan.gohttpsample.util.WebViewManager;
 
 /**
- * 请求对象演示Demo
+ * 字符串
  */
-public class RequestObjectActivity extends MyActivity {
+public class StringActivity extends MyActivity {
 	private WebViewManager webViewManager;
-	private EditText keywordEdit;
-	private Button searchButton;
+    private HttpRequestFuture httpRequestFuture;
 	
+	@SuppressLint("HandlerLeak")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_request_object);
-		keywordEdit = (EditText) findViewById(R.id.edit_requestObject_keyword);
-		searchButton = (Button) findViewById(R.id.button_requestObject_search);
-		searchButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Utils.closeSoftKeyboard(RequestObjectActivity.this);
-				search(keywordEdit.getEditableText().toString().trim());
-			}
-		});
+		setContentView(R.layout.activity_web);
 		webViewManager = new WebViewManager((WebView) findViewById(R.id.web1));
-		
-		keywordEdit.setText("王力宏");
-		search(keywordEdit.getEditableText().toString().trim());
+		load();
 	}
 	
-	@SuppressLint("HandlerLeak")
-	private void search(final String keyword){
-        GoHttp.with(getBaseContext()).newRequest(new BaiduSearchRequest(keyword), new StringHttpResponseHandler(), new HttpRequest.Listener<String>() {
+	private void load(){
+        GoHttp goHttp = GoHttp.with(getBaseContext());
+        httpRequestFuture = goHttp.newRequest("http://www.miui.com/forum.php", new StringHttpResponseHandler(), new HttpRequest.Listener<String>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
-				searchButton.setEnabled(false);
-				getHintView().loading(keyword+"相关信息");
+                getHintView().loading("MIUI首页");
             }
 
             @Override
             public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, String responseContent, boolean isCache, boolean isContinueCallback) {
-				ContentType contentType = ContentType.fromHttpMessage(httpResponse);
-				webViewManager.getWebView().loadDataWithBaseURL(null, responseContent, contentType.getMimeType(), contentType.getCharset("UTF-8"), null);
-				if(!isCache || !isContinueCallback){
-					searchButton.setEnabled(true);
-					getHintView().hidden();
-				}
+                // 显示HTML源代码
+                ContentType contentType = ContentType.fromHttpMessage(httpResponse);
+                webViewManager.getWebView().loadDataWithBaseURL(null, responseContent, contentType.getMimeType(), contentType.getCharset("UTF-8"), null);
+                getHintView().hidden();
             }
 
             @Override
             public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean isCache, boolean isContinueCallback) {
-				searchButton.setEnabled(true);
-				if(!isCache){
-					getHintView().failure(Failure.buildByException(getBaseContext(), failure.getException()), new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							search(keyword);
-						}
-					});
-				}
+                getHintView().failure(Failure.buildByException(getBaseContext(), failure.getException()), new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        load();
+                    }
+                });
             }
 
             @Override
@@ -105,7 +85,7 @@ public class RequestObjectActivity extends MyActivity {
             public void onUpdateProgress(HttpRequest httpRequest, long totalLength, long completedLength) {
                 getHintView().setProgress((int) totalLength, (int) completedLength);
             }
-        }).go();
+        }).cacheConfig(new CacheConfig(20 * 1000)).go();
 	}
 
 	@Override
@@ -116,4 +96,12 @@ public class RequestObjectActivity extends MyActivity {
 			super.onBackPressed();
 		}
 	}
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(httpRequestFuture != null && !httpRequestFuture.isFinished()){
+            httpRequestFuture.cancel(true);
+        }
+    }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.sample.beans;
+package me.xiaopan.gohttpsample.beans;
 
 public class ActivityItem {
 	private String title;

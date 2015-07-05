@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.sample.util;
+package me.xiaopan.gohttpsample.net;
 
-import android.app.Activity;
-import android.content.Context;
-import android.view.inputmethod.InputMethodManager;
+import me.xiaopan.android.gohttp.MethodType;
+import me.xiaopan.android.gohttp.requestobject.Method;
+import me.xiaopan.android.gohttp.requestobject.Request;
 
-public class Utils {
+/**
+ * 基本请求，可以将一些每个请求都必须有的参数定义在此
+ */
+@Method(MethodType.GET)
+public class BaseRequest implements Request {
 
-	
-	/**
-	 * 关闭软键盘
-	 */
-	public static void closeSoftKeyboard(Activity activity){
-		InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-		//如果软键盘已经开启
-		if(inputMethodManager.isActive()){
-			inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-		}
-	}
 }

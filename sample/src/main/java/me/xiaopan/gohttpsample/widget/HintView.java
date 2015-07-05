@@ -1,4 +1,4 @@
-package me.xiaopan.android.gohttp.sample.widget;
+package me.xiaopan.gohttpsample.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -16,8 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.sample.net.Failure;
+import me.xiaopan.gohttpsample.R;
+import me.xiaopan.gohttpsample.net.Failure;
 
 /**
  * 提示视图

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.sample.net.request;
+package me.xiaopan.gohttpsample.net.request;
 
 import me.xiaopan.android.gohttp.requestobject.CacheConfig;
 import me.xiaopan.android.gohttp.requestobject.Name;
 import me.xiaopan.android.gohttp.requestobject.Param;
 import me.xiaopan.android.gohttp.requestobject.URL;
 import me.xiaopan.android.gohttp.requestobject.Value;
-import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.sample.net.BaseRequest;
+import me.xiaopan.gohttpsample.R;
+import me.xiaopan.gohttpsample.net.BaseRequest;
 
 /**
  * 百度搜索请求

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.gohttp.sample.activity;
+package me.xiaopan.gohttpsample.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -30,10 +30,10 @@ import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.android.gohttp.HttpRequest;
 import me.xiaopan.android.gohttp.HttpRequestFuture;
 import me.xiaopan.android.gohttp.JsonHttpResponseHandler;
-import me.xiaopan.android.gohttp.sample.MyActivity;
-import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.sample.beans.Weather;
-import me.xiaopan.android.gohttp.sample.net.Failure;
+import me.xiaopan.gohttpsample.MyActivity;
+import me.xiaopan.gohttpsample.R;
+import me.xiaopan.gohttpsample.beans.Weather;
+import me.xiaopan.gohttpsample.net.Failure;
 
 /**
  * 获取天气信息

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.xiaopan.android.gohttp.sample.activity;
+package me.xiaopan.gohttpsample.activity;
 
 import android.os.Bundle;
 
-import me.xiaopan.android.gohttp.sample.MyListActivity;
-import me.xiaopan.android.gohttp.sample.R;
-import me.xiaopan.android.gohttp.sample.adapter.ActivityAdapter;
-import me.xiaopan.android.gohttp.sample.beans.ActivityItem;
+import me.xiaopan.gohttpsample.MyListActivity;
+import me.xiaopan.gohttpsample.R;
+import me.xiaopan.gohttpsample.adapter.ActivityAdapter;
+import me.xiaopan.gohttpsample.beans.ActivityItem;
 
 public class MainActivity extends MyListActivity {
 

@@ -13,16 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.xiaopan.android.gohttp.sample;
 
-import android.app.Application;
+package me.xiaopan.gohttpsample.util;
 
-import me.xiaopan.android.gohttp.GoHttp;
+import android.app.Activity;
+import android.content.Context;
+import android.view.inputmethod.InputMethodManager;
 
-public class MyApplication extends Application {
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		GoHttp.with(getBaseContext()).setDebugMode(BuildConfig.DEBUG);
+public class Utils {
+
+	
+	/**
+	 * 关闭软键盘
+	 */
+	public static void closeSoftKeyboard(Activity activity){
+		InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+		//如果软键盘已经开启
+		if(inputMethodManager.isActive()){
+			inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		}
 	}
 }

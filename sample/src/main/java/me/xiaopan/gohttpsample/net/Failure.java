@@ -1,4 +1,4 @@
-package me.xiaopan.android.gohttp.sample.net;
+package me.xiaopan.gohttpsample.net;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
