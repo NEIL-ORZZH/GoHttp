@@ -1,17 +1,29 @@
-# ![Logo](https://github.com/xiaopansky/GoHttp/raw/master/sample/src/main/res/drawable-mdpi/ic_launcher.png) GoHttp
+# ![Logo](docs/logo.png) GoHttp
 
 GoHttp是Android上的一个用来发送Http请求的库，旨在用最简单、最快捷的方式从网络上拿到我们想要的数据
 
-##Features
+###特性（Features）
 >* 异步发送Http请求；
 >* 全新设计的API，让发送Http请求以及处理请求结果、监听请求过程和进度更加简单、高效、舒适；
->* 全球首个支持用请求对象发送Http请求的网络框架，这将大大降低程序复杂度，让你越用越爽；
+>* 支持用请求对象发送Http请求的网络框架，这将大大降低程序复杂度，让你越用越爽；
 >* 支持在本地缓存Http响应；
 >* 内置多种Http响应处理器，可以直接实现将Http响应转成字符串、字节数组或下载文件以及将JSON格式的字符串转成Java对象；
 >* 完全的开放，你可以自定义缓存管理、请求处理、Http响应处理，甚至添加一种新的HttpRequest；
 >* 内置一系列的HttpHeader，方便你往HttpRequest中添加Header或从HttpResponse中获取Header；
 
-##Sample
+###使用（Usage）
+####1. 导入GoHttp（Import GoHttp to your project）
+**Gradle**
+```groovy
+compile 'me.xiaopan:gohttp:1.2.0'
+```
+
+**Eclipse**
+1. 首先到[releases](https://github.com/xiaopansky/GoHttp/releases)页面下载最新版本的aar文件
+2. 然后改后缀名为zip并解压
+3. 最后将classes.jar重命名为gohttp-`1.2.0`.jar并拷贝到你项目的libs目录下
+
+####2. 示例（Sample）
 发送Http请求获取MIUI首页的源码
 ```java
 public class StringActivity extends MyActivity {
@@ -76,9 +88,7 @@ public class StringActivity extends MyActivity {
 }
 ```
 
-更多功能请查看示例程序sample
-
-##你可能还感兴趣的功能
+###你可能还感兴趣的功能
 >* [发送请求并设置相关参数](https://github.com/xiaopansky/GoHttp/wiki/send-http-request)
 >* [使用内置的几种HttpResponseHandler处理响应](https://github.com/xiaopansky/GoHttp/wiki/handle-http-response)
 >* [监听请求过程并处理返回结果和失败信息](https://github.com/xiaopansky/GoHttp/wiki/listener)
@@ -87,29 +97,7 @@ public class StringActivity extends MyActivity {
 >* [取消请求](https://github.com/xiaopansky/GoHttp/wiki/cancel-request)
 >* [使用ResponseHandleCompletedAfterListener在异步线程中处理响应结果](https://github.com/xiaopansky/GoHttp/wiki/ResponseHandleCompletedAfterListener)
 
-##Downloads
->* [go-http-1.1.2.jar](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.2.jar)
->* [go-http-1.1.2-sources.zip](https://github.com/xiaopansky/GoHttp/raw/master/releases/go-http-1.1.2-sources.zip)
-
-Dependencies
->* [gson-2.2.4.jar](https://github.com/xiaopansky/GoHttp/raw/master/library/libs/gson-2.2.4.jar)
-
-##Change Log
-#1.1.3
->* ``优化``. 优化网络连接的处理，碰到取消或异常的时候主动关闭输入流及时释放连接，避免堵塞连接池，造成ConnectionPoolTimeoutException异常
-
-####1.1.2
->* ``优化``. HttpRequest.Listener的各项回调中都过滤了取消，这就有效防止了回调发出后Activity或Fragment立马销毁，然后回调执行的时候用了上下文导致崩溃
-
-####1.1.1
->* ``新增`` ResponseHandleCompletedAfterListener.onResponseHandleAfter()方法增加Object类型的返回值，这样你就可以中途改变ResponseObject的类型，详情请参见[使用ResponseHandleCompletedAfterListener在异步线程中处理响应结果](https://github.com/xiaopansky/GoHttp/wiki/ResponseHandleCompletedAfterListener)
-
-####1.1.0
->* ``优化``。缓存的读取增加了同步限制，数据更安全
->* ``优化``。对于缓存ID相同的请求增加了同步限制，不再允许异步请求，这样第二个请求就可以使用第一个请求的缓存数据了
->* ``新增``。新增EmptyHttpResponseHandler，用来处理响应实体为空的Http请求
-
-##License
+###License
 ```java
 /*
  * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
