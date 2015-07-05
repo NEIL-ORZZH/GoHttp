@@ -90,7 +90,7 @@ public class StringActivity extends MyActivity {
 }
 ```
 
-###你可能还感兴趣的功能
+####你可能还感兴趣的功能
 >* [发送请求并设置相关参数](https://github.com/xiaopansky/GoHttp/wiki/send-http-request)
 >* [使用内置的几种HttpResponseHandler处理响应](https://github.com/xiaopansky/GoHttp/wiki/handle-http-response)
 >* [监听请求过程并处理返回结果和失败信息](https://github.com/xiaopansky/GoHttp/wiki/listener)
