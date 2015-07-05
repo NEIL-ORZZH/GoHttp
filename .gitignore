@@ -25,3 +25,6 @@ gen/
 # Gradle files
 .gradle/
 build/
+
+# MAC OS X files
+.DS_Store
