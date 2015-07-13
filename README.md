@@ -13,17 +13,38 @@ GoHttp是Android上的一个用来发送Http请求的库，旨在用最简单、
 
 ###使用（Usage）
 ####1. 导入GoHttp（Import GoHttp to your project）
-**Gradle**
+``从JCenter仓库导入（Import from jcenter）``
 
 ```groovy
-compile 'me.xiaopan:gohttp:1.2.0'
+dependencies{
+	compile 'me.xiaopan:gohttp:1.2.0'
+}
 ```
 
-**Eclipse**
+``离线模式（Offline work）``
 
-1. 首先到[releases](https://github.com/xiaopansky/GoHttp/releases)页面下载最新版本的aar文件
+首先到[releases](https://github.com/xiaopansky/GoHttp/releases)页面下载最新版的aar包（`这里以gohttp-1.2.0.aar为例，具体请以你下载的版本为准`），并放到你module的libs目录下
+
+然后在你module的build.gradle文件中添加以下代码：
+```groovy
+repositories{
+    flatDir(){
+        dirs 'libs'
+    }
+}
+
+dependencies{
+    compile(name:'gohttp-1.2.0', ext:'aar')
+}
+```
+最后同步一下Gradle即可
+
+#####使用Eclipse（Use Eclipse）
+
+1. 首先到[releases](https://github.com/xiaopansky/GoHttp/releases)页面下载最新版的aar包（`这里以gohttp-1.2.0.aar为例，具体请以你下载的版本为准`）
 2. 然后改后缀名为zip并解压
-3. 最后将classes.jar重命名为gohttp-`1.2.0`.jar并拷贝到你项目的libs目录下
+3. 接下来将classes.jar重命名为gohttp-1.2.0.jar
+4. 最后拷贝gohttp-1.2.0.jar到你项目的libs目录下
 
 ####2. 示例（Sample）
 发送Http请求获取MIUI首页的源码
