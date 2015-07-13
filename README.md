@@ -13,6 +13,7 @@ GoHttp是Android上的一个用来发送Http请求的库，旨在用最简单、
 
 ###使用（Usage）
 ####1. 导入GoHttp（Import GoHttp to your project）
+#####使用Gradle（Use Gradle）
 ``从JCenter仓库导入（Import from jcenter）``
 
 ```groovy
